@@ -33,10 +33,23 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
   const handleSignOut = async () => {
     await signOut();
-    const adminNavigation = [
-      { name: "Admin Panel", href: "/backend", icon: Shield },
-      { name: "All Users", href: "/backend/users", icon: Users },
-    ];
+    toast.success("Signed out successfully");
+  };
+
+  const isActive = (path: string) => location.pathname === path;
+
+  const navigation = [
+    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+    { name: "My Profile", href: "/profile", icon: Briefcase },
+    { name: "Billing", href: "/billing", icon: CreditCard },
+    { name: "Analytics", href: "/analytics", icon: BarChart3 },
+    { name: "Settings", href: "/settings", icon: Settings },
+  ];
+
+  const adminNavigation = [
+    { name: "Admin Panel", href: "/admin", icon: Shield },
+    { name: "All Users", href: "/admin/users", icon: Users },
+  ];
 
     return (
       <div className="min-h-screen bg-background flex">

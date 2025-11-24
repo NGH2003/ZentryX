@@ -49,6 +49,7 @@ import VolumeConverter from "@/components/tools/VolumeConverter";
 import BaseConverter from "@/components/tools/BaseConverter";
 import PrimeChecker from "@/components/tools/PrimeChecker";
 import RomanNumeralConverter from "@/components/tools/RomanNumeralConverter";
+import BasicCalculator from "@/components/tools/BasicCalculator";
 import AgeCalculator from "@/components/tools/AgeCalculator";
 import BMICalculator from "@/components/tools/BMICalculator";
 import LoanCalculator from "@/components/tools/LoanCalculator";

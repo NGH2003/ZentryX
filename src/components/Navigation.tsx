@@ -1,10 +1,13 @@
-import { Home, Wrench, Grid, Bug, BookOpen } from "lucide-react";
+import { Home, Wrench, Grid, Bug, BookOpen, Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useBranding } from "@/contexts/BrandingContext";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 const Navigation = () => {
   const location = useLocation();
   const { branding } = useBranding();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -55,7 +58,8 @@ const Navigation = () => {
             )}
           </Link>
 
-          <div className="flex items-center space-x-1">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-1">
             {navLinks.map((link) => {
               const Icon = link.icon;
               const active = isActive(link.path);
@@ -77,7 +81,46 @@ const Navigation = () => {
               );
             })}
           </div>
+
+          {/* Mobile Menu Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </Button>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-200/50 bg-white">
+            <div className="px-4 py-3 space-y-1">
+              {navLinks.map((link) => {
+                const Icon = link.icon;
+                const active = isActive(link.path);
+                return (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`
+                      flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-all
+                      ${active
+                        ? 'bg-gradient-to-r from-blue-50 to-purple-50 text-blue-600'
+                        : 'text-gray-600 hover:bg-gray-50'
+                      }
+                    `}
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span>{link.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );

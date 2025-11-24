@@ -661,7 +661,7 @@ const Admin = () => {
                   <CardTitle className="text-sm">Tools Used Today</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{getDailyUsage().length}</div>
+                  <div className="text-2xl font-bold">{getDailyUsage(1).reduce((sum, day) => sum + day.uses, 0)}</div>
                 </CardContent>
               </Card>
             </div>
@@ -672,10 +672,10 @@ const Admin = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {getTopTools().map((tool, index) => (
+                  {getTopTools(5).map((tool, index) => (
                     <div key={index} className="flex items-center justify-between p-2 border-b">
                       <span className="font-medium">{tool.name}</span>
-                      <Badge>{tool.count} uses</Badge>
+                      <Badge>{tool.uses} uses</Badge>
                     </div>
                   ))}
                 </div>
