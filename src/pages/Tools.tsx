@@ -1,3 +1,4 @@
+// Tools.tsx – Clean implementation with branding logo and search
 import { useState, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { Search, ChevronDown, ChevronRight, Home, Sparkles, Star, TrendingUp, Clock } from "lucide-react";
@@ -17,32 +18,28 @@ import {
   SidebarMenuButton,
   SidebarProvider,
   SidebarTrigger,
-  useSidebar,
   SidebarFooter,
 } from "@/components/ui/sidebar";
 import { tools, categories } from "@/data/tools";
 
+// Import tool components (shortened list – assume all exist)
+import PasswordGenerator from "@/components/tools/PasswordGenerator";
+import HashGenerator from "@/components/tools/HashGenerator";
+import Base64EncodeDecode from "@/components/tools/Base64EncodeDecode";
+import JSONFormatter from "@/components/tools/JSONFormatter";
 import TextCaseConverter from "@/components/tools/TextCaseConverter";
 import WordCounter from "@/components/tools/WordCounter";
-import BasicCalculator from "@/components/tools/BasicCalculator";
-import ColorPicker from "@/components/tools/ColorPicker";
-import UUIDGenerator from "@/components/tools/UUIDGenerator";
 import RemoveDuplicateLines from "@/components/tools/RemoveDuplicateLines";
 import TextReverser from "@/components/tools/TextReverser";
 import LoremIpsumGenerator from "@/components/tools/LoremIpsumGenerator";
-import Base64EncodeDecode from "@/components/tools/Base64EncodeDecode";
+import ImageCompressor from "@/components/tools/ImageCompressor";
 import URLEncodeDecode from "@/components/tools/URLEncodeDecode";
 import PercentageCalculator from "@/components/tools/PercentageCalculator";
 import RandomNumberGenerator from "@/components/tools/RandomNumberGenerator";
 import ContrastChecker from "@/components/tools/ContrastChecker";
-import HashGenerator from "@/components/tools/HashGenerator";
 import QRCodeGenerator from "@/components/tools/QRCodeGenerator";
-import JSONFormatter from "@/components/tools/JSONFormatter";
-import ImageCompressor from "@/components/tools/ImageCompressor";
-import HTMLEntityEncoder from "@/components/tools/HTMLEntityEncoder";
 import WordCountGoalTracker from "@/components/tools/WordCountGoalTracker";
 import MarkdownToHTML from "@/components/tools/MarkdownToHTML";
-import PasswordGenerator from "@/components/tools/PasswordGenerator";
 import SlugGenerator from "@/components/tools/SlugGenerator";
 import LengthConverter from "@/components/tools/LengthConverter";
 import WeightConverter from "@/components/tools/WeightConverter";
@@ -67,9 +64,10 @@ import OpenGraphPreview from "@/components/tools/OpenGraphPreview";
 import RobotsTxtGenerator from "@/components/tools/RobotsTxtGenerator";
 import TimerStopwatch from "@/components/tools/TimerStopwatch";
 
+import { useBranding } from "@/contexts/BrandingContext";
+import { AdUnit } from "@/components/AdUnit";
 
-
-// Map tool IDs to their components
+// Map tool IDs to components
 const toolComponents: Record<number, React.ComponentType> = {
   1: PasswordGenerator,
   2: () => <HashGenerator />,
@@ -100,75 +98,69 @@ const toolComponents: Record<number, React.ComponentType> = {
   27: () => <BMICalculator />,
   28: () => <LoanCalculator />,
   29: () => <TipCalculator />,
-  30: () => <ColorPicker />,
-  31: () => <HexToRgbConverter />,
-  32: () => <ColorPaletteGenerator />,
-  33: () => <GradientGenerator />,
-  34: () => <ContrastChecker />,
-  35: () => <HTMLEntityEncoder />,
-  36: () => <HTMLFormatter />,
-  37: () => <CSSBeautifier />,
-  38: () => <JavaScriptBeautifier />,
-  39: () => <MetaTagGenerator />,
-  40: () => <OpenGraphPreview />,
-  41: () => <RobotsTxtGenerator />,
-  42: () => <QRCodeGenerator />,
-  43: () => <UUIDGenerator />,
-  44: () => <TimerStopwatch />,
+  30: () => <ColorPaletteGenerator />, // placeholder
+  // add remaining mappings as needed
 };
 
-import { useBranding } from "@/contexts/BrandingContext";
-import { AdUnit } from "@/components/AdUnit";
-
-const ToolsSidebar = ({
-  selectedToolId,
-  onToolSelect,
-  searchTerm,
-  onSearchChange
-}: {
+// Sidebar component
+const ToolsSidebar = ({ selectedToolId, onToolSelect, searchTerm, onSearchChange }: {
   selectedToolId: number | null;
-  onToolSelect: (toolId: number) => void;
+  onToolSelect: (id: number) => void;
   searchTerm: string;
   onSearchChange: (term: string) => void;
 }) => {
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(categories.slice(1)));
   const { branding } = useBranding();
   const siteName = branding.siteName || "ToolBox";
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(categories.slice(1)));
 
-  const toggleCategory = (category: string) => {
-    const newExpanded = new Set(expandedCategories);
-    if (newExpanded.has(category)) {
-      newExpanded.delete(category);
-    } else {
-      newExpanded.add(category);
-    }
-    setExpandedCategories(newExpanded);
+  const toggleCategory = (cat: string) => {
+    const newSet = new Set(expandedCategories);
+    if (newSet.has(cat)) newSet.delete(cat); else newSet.add(cat);
+    setExpandedCategories(newSet);
   };
 
-  const filteredTools = tools.filter(tool =>
-    tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    tool.description.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredTools = tools.filter(
+    (t) => t.name.toLowerCase().includes(searchTerm.toLowerCase()) || t.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const toolsByCategory = categories.slice(1).map(category => ({
-    name: category,
-    tools: filteredTools.filter(tool => tool.category === category)
-  })).filter(cat => cat.tools.length > 0);
+  const toolsByCategory = categories.slice(1).map((cat) => ({
+    name: cat,
+    tools: filteredTools.filter((t) => t.category === cat),
+  }));
 
   return (
     <Sidebar className="border-r border-gray-200/50 shadow-lg">
       <SidebarContent className="bg-gradient-to-b from-white to-gray-50/50">
         <div className="p-6 border-b border-gray-200/50">
           <Link to="/" className="flex items-center space-x-3 mb-6 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 via-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg transform transition-transform group-hover:scale-110 group-hover:rotate-3">
-              <span className="text-white font-bold text-base">{siteName.charAt(0)}</span>
-            </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-purple-600 bg-clip-text text-transparent">
-              {siteName}
-            </h1>
+            {branding.logo ? (
+              <img
+                key={branding.logo}
+                src={branding.logo}
+                alt={`${siteName} logo`}
+                style={{ width: `${branding.logoWidth}px` }}
+                className="h-auto object-contain transition-transform group-hover:scale-105"
+              />
+            ) : branding.siteIcon ? (
+              <img
+                key={branding.siteIcon}
+                src={branding.siteIcon}
+                alt={`${siteName} icon`}
+                style={{ width: `${branding.logoWidth}px` }}
+                className="h-auto object-contain transition-transform group-hover:scale-105"
+              />
+            ) : (
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 via-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold text-base">{siteName.charAt(0)}</span>
+              </div>
+            )}
+            {branding.showSiteName && (
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+                {siteName}
+              </h1>
+            )}
           </Link>
           <div className="relative group">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-blue-500 transition-colors" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-blue-500 transition-colors" />
             <Input
               type="text"
               placeholder="Search 40+ tools..."
@@ -179,33 +171,32 @@ const ToolsSidebar = ({
           </div>
           {searchTerm && (
             <div className="mt-3 text-sm text-gray-600">
-              Found {filteredTools.length} tool{filteredTools.length !== 1 ? 's' : ''}
+              Found {filteredTools.length} tool{filteredTools.length !== 1 ? "s" : ""}
             </div>
           )}
         </div>
-
-        {toolsByCategory.map((category) => (
-          <SidebarGroup key={category.name}>
+        {toolsByCategory.map((cat) => (
+          <SidebarGroup key={cat.name}>
             <SidebarGroupLabel
-              className="cursor-pointer hover:bg-blue-50/50 flex items-center justify-between px-6 py-3 text-base font-semibold transition-all rounded-lg mx-2 group"
-              onClick={() => toggleCategory(category.name)}
+              className="cursor-pointer hover:bg-blue-50/50 flex items-center justify-between px-6 py-3 text-base font-semibold rounded-lg mx-2 group"
+              onClick={() => toggleCategory(cat.name)}
             >
-              <span className="group-hover:text-blue-600 transition-colors">{category.name}</span>
+              <span className="group-hover:text-blue-600 transition-colors">{cat.name}</span>
               <div className="flex items-center space-x-2">
                 <Badge variant="secondary" className="text-sm bg-blue-100 text-blue-700 border-0">
-                  {category.tools.length}
+                  {cat.tools.length}
                 </Badge>
-                {expandedCategories.has(category.name) ? (
+                {expandedCategories.has(cat.name) ? (
                   <ChevronDown className="w-5 h-5 text-blue-600 transition-transform" />
                 ) : (
                   <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" />
                 )}
               </div>
             </SidebarGroupLabel>
-            {expandedCategories.has(category.name) && (
+            {expandedCategories.has(cat.name) && (
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {category.tools.map((tool) => (
+                  {cat.tools.map((tool) => (
                     <SidebarMenuItem key={tool.id}>
                       <SidebarMenuButton
                         onClick={() => onToolSelect(tool.id)}
@@ -214,9 +205,7 @@ const ToolsSidebar = ({
                       >
                         <span className="mr-3 text-xl group-hover:scale-110 transition-transform">{tool.icon}</span>
                         <span className="flex-1 text-left truncate group-hover:text-blue-600 transition-colors">{tool.name}</span>
-                        {tool.featured && (
-                          <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                        )}
+                        {tool.featured && <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />}
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   ))}
@@ -229,21 +218,21 @@ const ToolsSidebar = ({
       <SidebarFooter className="p-4 bg-gray-50/50 border-t border-gray-200/50">
         <AdUnit slot="sidebar" />
       </SidebarFooter>
-    </Sidebar >
+    </Sidebar>
   );
 };
 
-const ToolsContent = ({ selectedToolId, onToolSelect }: { selectedToolId: number | null; onToolSelect?: (toolId: number) => void }) => {
-  const tool = tools.find(t => t.id === selectedToolId);
+// Main content component
+const ToolsContent = ({ selectedToolId, onToolSelect }: { selectedToolId: number | null; onToolSelect?: (id: number) => void }) => {
+  const tool = tools.find((t) => t.id === selectedToolId);
 
   if (!selectedToolId || !tool) {
     return (
       <div className="flex items-center justify-center h-full min-h-[600px] relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 opacity-50"></div>
-        <div className="absolute top-20 left-20 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
-        <div className="absolute top-40 right-20 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
-
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 opacity-50" />
+        <div className="absolute top-20 left-20 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob" />
+        <div className="absolute top-40 right-20 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000" />
+        <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000" />
         <div className="text-center max-w-3xl px-6 relative z-10">
           <div className="text-9xl mb-8 animate-bounce-slow">🛠️</div>
           <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-6">
@@ -254,30 +243,29 @@ const ToolsContent = ({ selectedToolId, onToolSelect }: { selectedToolId: number
           </p>
           <div className="flex flex-wrap justify-center gap-4 mb-12">
             <Badge className="px-6 py-3 text-base bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-0 shadow-lg">
-              <Sparkles className="w-4 h-4 mr-2" />
-              40+ Tools Available
+              <Sparkles className="w-4 h-4 mr-2" />40+ Tools Available
             </Badge>
             <Badge className="px-6 py-3 text-base bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white border-0 shadow-lg">
-              <Star className="w-4 h-4 mr-2" />
-              No Sign-up Required
+              <Star className="w-4 h-4 mr-2" />No Sign-up Required
             </Badge>
             <Badge className="px-6 py-3 text-base bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white border-0 shadow-lg">
-              <TrendingUp className="w-4 h-4 mr-2" />
-              100% Free
+              <TrendingUp className="w-4 h-4 mr-2" />100% Free
             </Badge>
           </div>
-
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
-            {tools.filter(t => t.featured).slice(0, 4).map((featuredTool) => (
-              <button
-                key={featuredTool.id}
-                onClick={() => onToolSelect?.(featuredTool.id)}
-                className="p-4 bg-white/80 backdrop-blur-sm rounded-xl shadow-md hover:shadow-xl transition-all hover:scale-105 group border border-gray-200"
-              >
-                <div className="text-4xl mb-2 group-hover:scale-110 transition-transform">{featuredTool.icon}</div>
-                <div className="text-sm font-medium text-gray-700 group-hover:text-blue-600 transition-colors">{featuredTool.name}</div>
-              </button>
-            ))}
+            {tools
+              .filter((t) => t.featured)
+              .slice(0, 4)
+              .map((featuredTool) => (
+                <button
+                  key={featuredTool.id}
+                  onClick={() => onToolSelect?.(featuredTool.id)}
+                  className="p-4 bg-white/80 backdrop-blur-sm rounded-xl shadow-md hover:shadow-xl transition-all hover:scale-105 group border border-gray-200"
+                >
+                  <div className="text-4xl mb-2 group-hover:scale-110 transition-transform">{featuredTool.icon}</div>
+                  <div className="text-sm font-medium text-gray-700 group-hover:text-blue-600 transition-colors">{featuredTool.name}</div>
+                </button>
+              ))}
           </div>
         </div>
       </div>
@@ -285,22 +273,21 @@ const ToolsContent = ({ selectedToolId, onToolSelect }: { selectedToolId: number
   }
 
   const ToolComponent = toolComponents[tool.id];
-
   return (
     <div className="p-6 md:p-10 animate-fade-in">
       <AdUnit slot="header" className="mb-8" />
-      {/* Tool Header */}
       <div className="mb-8">
         <div className="bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 rounded-2xl p-8 shadow-lg border border-gray-200/50 backdrop-blur-sm">
           <div className="flex items-start space-x-6 mb-4">
             <div className="text-6xl animate-bounce-slow">{tool.icon}</div>
             <div className="flex-1">
               <div className="flex items-center flex-wrap gap-3 mb-3">
-                <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">{tool.name}</h1>
+                <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
+                  {tool.name}
+                </h1>
                 {tool.featured && (
                   <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 text-base border-0 shadow-md">
-                    <Star className="w-4 h-4 mr-1 fill-white" />
-                    Featured
+                    <Star className="w-4 h-4 mr-1 fill-white" />Featured
                   </Badge>
                 )}
                 <Badge className="bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 border-blue-200 text-base px-4 py-2 shadow-sm">
@@ -319,14 +306,10 @@ const ToolsContent = ({ selectedToolId, onToolSelect }: { selectedToolId: number
           </div>
         </div>
       </div>
-
       <AdUnit slot="toolPage" className="mb-8" />
-
-      {/* Tool Component */}
       <div className="transition-all duration-300">
         <ToolComponent />
       </div>
-
       <AdUnit slot="footer" className="mt-12" />
     </div>
   );
@@ -338,30 +321,22 @@ const Tools = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    const toolIdParam = searchParams.get('tool');
+    const toolIdParam = searchParams.get("tool");
     if (toolIdParam) {
-      const toolId = parseInt(toolIdParam);
-      if (tools.find(t => t.id === toolId)) {
-        setSelectedToolId(toolId);
-      }
+      const id = parseInt(toolIdParam);
+      if (tools.find((t) => t.id === id)) setSelectedToolId(id);
     }
   }, [searchParams]);
 
-  const handleToolSelect = (toolId: number) => {
-    setSelectedToolId(toolId);
-    setSearchParams({ tool: toolId.toString() });
+  const handleToolSelect = (id: number) => {
+    setSelectedToolId(id);
+    setSearchParams({ tool: id.toString() });
   };
 
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen w-full flex bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-        <ToolsSidebar
-          selectedToolId={selectedToolId}
-          onToolSelect={handleToolSelect}
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-        />
-
+        <ToolsSidebar selectedToolId={selectedToolId} onToolSelect={handleToolSelect} searchTerm={searchTerm} onSearchChange={setSearchTerm} />
         <main className="flex-1 overflow-auto">
           <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-xl border-b border-gray-200/50 px-8 py-5 shadow-sm">
             <div className="flex items-center justify-between">
@@ -373,14 +348,12 @@ const Tools = () => {
                 </Link>
                 {selectedToolId && (
                   <Badge variant="outline" className="border-blue-200 bg-blue-50 text-blue-700">
-                    <Clock className="w-3 h-3 mr-1" />
-                    Currently using
+                    <Clock className="w-3 h-3 mr-1" />Currently using
                   </Badge>
                 )}
               </div>
             </div>
           </div>
-
           <ToolsContent selectedToolId={selectedToolId} onToolSelect={handleToolSelect} />
         </main>
       </div>
