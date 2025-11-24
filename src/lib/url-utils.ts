@@ -23,13 +23,3 @@ export function getToolUrl(category: string, toolName: string): string {
     const toolSlug = slugify(toolName);
     return `/tools/${categorySlug}/${toolSlug}`;
 }
-
-/**
- * Get the tool detail URL
- * @param category - The tool category
- * @param toolName - The tool name
- * @returns Full tool detail URL path
- */
-export function getToolDetailUrl(category: string, toolName: string): string {
-    return `${getToolUrl(category, toolName)}/detail`;
-}

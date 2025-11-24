@@ -17,7 +17,6 @@ import ErrorBoundary from "./components/ErrorBoundary";
 // Page components
 import Index from "./pages/Index";
 import Tools from "./pages/Tools";
-import Tool from "./pages/Tool";
 import ToolDetail from "./pages/ToolDetail";
 import Categories from "./pages/Categories";
 import Admin from "./pages/Admin";
@@ -52,8 +51,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/tools" element={<Tools />} />
-      <Route path="/tools/:category/:toolName" element={<Tool />} />
-      <Route path="/tools/:category/:toolName/detail" element={<ToolDetail />} />
+      <Route path="/tools/:category/:toolName" element={<ToolDetail />} />
       <Route path="/categories" element={<Categories />} />
       <Route path="/backend" element={<AdminRoute element={<Admin />} />} />
       <Route path="/auth" element={<Auth />} />
@@ -73,6 +71,7 @@ function AppRoutes() {
       {/* Redirect old tool URLs to tools page */}
       <Route path="/tool/:id" element={<Navigate to="/tools" replace />} />
       <Route path="/tool/:id/detail" element={<Navigate to="/tools" replace />} />
+      <Route path="/tools/:category/:toolName/detail" element={<Navigate to="/tools/:category/:toolName" replace />} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>
