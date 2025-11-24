@@ -41,6 +41,39 @@ export type Database = {
         }
         Relationships: []
       }
+      subscription_tiers: {
+        Row: {
+          created_at: string
+          features: Json
+          id: string
+          interval: string
+          name: string
+          price: number
+          tool_usage_limit: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          features?: Json
+          id?: string
+          interval: string
+          name: string
+          price: number
+          tool_usage_limit?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          features?: Json
+          id?: string
+          interval?: string
+          name?: string
+          price?: number
+          tool_usage_limit?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       usage_logs: {
         Row: {
           created_at: string
@@ -96,6 +129,56 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean
+          created_at: string
+          current_period_end: string
+          current_period_start: string
+          id: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          tier_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean
+          created_at?: string
+          current_period_end: string
+          current_period_start: string
+          id?: string
+          status: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          tier_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean
+          created_at?: string
+          current_period_end?: string
+          current_period_start?: string
+          id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          tier_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_subscriptions_tier_id_fkey"
+            columns: ["tier_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_tiers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       workspace_members: {
         Row: {
