@@ -32,41 +32,43 @@ interface BrandingContextType {
 }
 
 export const defaultBranding: BrandingSettings = {
-    siteName: "ToolBox Zenith",
-    tagline: "Your Ultimate Collection of Web Tools",
+    siteName: "ZENTRYX",
+    tagline: "Smart Tools. Zero Effort.",
     logo: "",
     favicon: "",
-    primaryColor: "#3B82F6",
-    secondaryColor: "#8B5CF6",
-    logoWidth: 120,
+    primaryColor: "#3A7AFE",
+    secondaryColor: "#9333EA",
+    logoWidth: 140,
     showSiteName: true,
     siteIcon: "",
     footerLogo: "",
-    footerLogoWidth: 120,
-    footerText: "The ultimate collection of digital tools for developers, designers, and creators.",
-    footerBgColor1: "#111827", // gray-900
-    footerBgColor2: "#111827", // gray-900
+    footerLogoWidth: 140,
+    footerText: "40+ Free Online Tools. Fast. Simple. Trusted. Everything you need for development, design, and productivity.",
+    footerBgColor1: "#0F172A", // Zentryx dark
+    footerBgColor2: "#1E293B", // Slightly lighter
     footerLinks: {
         column1Title: "Tools",
         column1Links: [
-            { label: "Converters", url: "/categories" },
-            { label: "Calculators", url: "/categories" },
-            { label: "Generators", url: "/categories" },
-            { label: "Text Tools", url: "/categories" },
+            { label: "Text Tools", url: "/tools?category=text" },
+            { label: "Image Tools", url: "/tools?category=image" },
+            { label: "Calculators", url: "/tools?category=calculator" },
+            { label: "Converters", url: "/tools?category=converter" },
+            { label: "Security Tools", url: "/tools?category=security" },
+            { label: "Developer Tools", url: "/tools?category=developer" },
         ],
         column2Title: "Company",
         column2Links: [
             { label: "About", url: "/about" },
-            { label: "Blog", url: "/blog" },
-            { label: "Privacy", url: "/privacy" },
-            { label: "Terms", url: "/terms" },
+            { label: "Contact", url: "/contact" },
+            { label: "Privacy Policy", url: "/privacy" },
+            { label: "Terms of Service", url: "/terms" },
         ],
         column3Title: "Support",
         column3Links: [
             { label: "Help Center", url: "/help-center" },
             { label: "Bug Report", url: "/bug-report" },
             { label: "Feature Request", url: "/feature-request" },
-            { label: "Contact", url: "/contact" },
+            { label: "Sitemap", url: "/sitemap" },
         ],
     },
 };
