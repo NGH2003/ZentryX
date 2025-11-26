@@ -41,6 +41,16 @@ import { AdminSidebar } from "@/components/AdminSidebar";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { tools } from "@/data/tools";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Plus, Pencil, Trash2, X, Save } from "lucide-react";
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState(() => localStorage.getItem("adminActiveTab") || "overview");
@@ -52,7 +62,8 @@ const Admin = () => {
   const navigate = useNavigate();
   const { isMaintenanceMode, setMaintenanceMode, maintenanceMessage, updateMaintenanceMessage } = useMaintenance();
   const { branding, setBranding: setBrandingContext } = useBranding();
-  const { blogPosts, setBlogPosts } = useBlog();
+  const { branding, setBranding: setBrandingContext } = useBranding();
+  const { blogPosts, setBlogPosts, addPost, updatePost, deletePost } = useBlog();
   const { getDailyUsage, getCategoryDistribution, getTopTools, getTotalViews, getActiveUsers } = useAnalytics();
   const { config: adsConfig, updateConfig, updateSlot } = useAds();
 
@@ -69,6 +80,65 @@ const Admin = () => {
     const saved = localStorage.getItem("enabledTools");
     return saved ? JSON.parse(saved) : tools.reduce((acc, tool) => ({ ...acc, [tool.id]: true }), {});
   });
+
+  // Tool editing state
+  const [isToolDialogOpen, setIsToolDialogOpen] = useState(false);
+  const [editingTool, setEditingTool] = useState<any>(null);
+  const [toolOverrides, setToolOverrides] = useState<Record<number, any>>(() => {
+    const saved = localStorage.getItem("toolOverrides");
+    return saved ? JSON.parse(saved) : {};
+  });
+
+  // Blog editing state
+  const [isBlogDialogOpen, setIsBlogDialogOpen] = useState(false);
+  const [editingPost, setEditingPost] = useState<any>(null);
+
+  useEffect(() => {
+    localStorage.setItem("toolOverrides", JSON.stringify(toolOverrides));
+  }, [toolOverrides]);
+
+  const handleSaveTool = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingTool) return;
+
+    setToolOverrides(prev => ({
+      ...prev,
+      [editingTool.id]: editingTool
+    }));
+    setIsToolDialogOpen(false);
+    toast.success("Tool updated successfully");
+  };
+
+  const handleSavePost = (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = {
+      ...editingPost,
+      tags: typeof editingPost.tags === 'string' ? editingPost.tags.split(',').map((t: string) => t.trim()) : editingPost.tags
+    };
+
+    if (editingPost.id) {
+      updatePost(editingPost.id, formData);
+      toast.success("Post updated successfully");
+    } else {
+      addPost(formData);
+      toast.success("Post created successfully");
+    }
+    setIsBlogDialogOpen(false);
+  };
+
+  const openNewPostDialog = () => {
+    setEditingPost({
+      title: "",
+      slug: "",
+      excerpt: "",
+      content: "",
+      coverImage: "",
+      author: branding.siteName + " Team",
+      tags: [],
+      published: false
+    });
+    setIsBlogDialogOpen(true);
+  };
 
   useEffect(() => {
     setLocalBranding(branding);
@@ -193,7 +263,7 @@ const Admin = () => {
         const categories = ["all", ...Array.from(new Set(tools.map(t => t.category)))];
 
         // Filter tools
-        const filteredTools = tools.filter(tool => {
+        const filteredTools = tools.map(tool => toolOverrides[tool.id] ? { ...tool, ...toolOverrides[tool.id] } : tool).filter(tool => {
           const matchesSearch = tool.name.toLowerCase().includes(toolSearch.toLowerCase()) ||
             tool.description.toLowerCase().includes(toolSearch.toLowerCase());
           const matchesCategory = selectedCategory === "all" || tool.category === selectedCategory;
@@ -321,6 +391,16 @@ const Admin = () => {
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                              setEditingTool(tool);
+                              setIsToolDialogOpen(true);
+                            }}
+                          >
+                            <Pencil className="w-4 h-4 text-gray-500" />
+                          </Button>
                           <Switch
                             checked={enabledTools[tool.id] ?? true}
                             onCheckedChange={() => toggleTool(tool.id)}
@@ -806,11 +886,16 @@ const Admin = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <p className="text-sm text-muted-foreground">
-                    {blogPosts.length} blog post{blogPosts.length !== 1 ? "s" : ""} published
-                  </p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-muted-foreground">
+                      {blogPosts.length} blog post{blogPosts.length !== 1 ? "s" : ""} published
+                    </p>
+                    <Button onClick={openNewPostDialog} size="sm" className="gap-2">
+                      <Plus className="w-4 h-4" /> New Post
+                    </Button>
+                  </div>
                   <div className="grid gap-4">
-                    {blogPosts.slice(0, 5).map((post) => (
+                    {blogPosts.map((post) => (
                       <div key={post.id} className="flex items-center gap-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors">
                         <div className="w-24 h-16 bg-gray-100 rounded-md overflow-hidden shrink-0 border border-gray-200">
                           <img
@@ -831,9 +916,34 @@ const Admin = () => {
                             ))}
                           </div>
                         </div>
-                        <Badge variant={post.published ? "default" : "secondary"}>
-                          {post.published ? "Published" : "Draft"}
-                        </Badge>
+                        <div className="flex items-center gap-2">
+                          <Badge variant={post.published ? "default" : "secondary"}>
+                            {post.published ? "Published" : "Draft"}
+                          </Badge>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                              setEditingPost(post);
+                              setIsBlogDialogOpen(true);
+                            }}
+                          >
+                            <Pencil className="w-4 h-4 text-gray-500" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                            onClick={() => {
+                              if (confirm('Are you sure you want to delete this post?')) {
+                                deletePost(post.id);
+                                toast.success('Post deleted successfully');
+                              }
+                            }}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -1146,6 +1256,158 @@ const Admin = () => {
             <div key={activeTab} className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full">{renderContent()}</div>
           </SidebarInset>
         </div>
+
+        {/* Tool Edit Dialog */}
+        <Dialog open={isToolDialogOpen} onOpenChange={setIsToolDialogOpen}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Edit Tool</DialogTitle>
+              <DialogDescription>
+                Make changes to the tool details here. Click save when you're done.
+              </DialogDescription>
+            </DialogHeader>
+            {editingTool && (
+              <form onSubmit={handleSaveTool} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="tool-name">Name</Label>
+                  <Input
+                    id="tool-name"
+                    value={editingTool.name}
+                    onChange={(e) => setEditingTool({ ...editingTool, name: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="tool-description">Description</Label>
+                  <Textarea
+                    id="tool-description"
+                    value={editingTool.description}
+                    onChange={(e) => setEditingTool({ ...editingTool, description: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="tool-category">Category</Label>
+                  <Input
+                    id="tool-category"
+                    value={editingTool.category}
+                    onChange={(e) => setEditingTool({ ...editingTool, category: e.target.value })}
+                  />
+                </div>
+                <div className="flex items-center justify-between p-2 border rounded">
+                  <Label htmlFor="tool-featured">Featured Tool</Label>
+                  <Switch
+                    id="tool-featured"
+                    checked={editingTool.featured || false}
+                    onCheckedChange={(checked) => setEditingTool({ ...editingTool, featured: checked })}
+                  />
+                </div>
+                <DialogFooter>
+                  <Button type="submit">Save changes</Button>
+                </DialogFooter>
+              </form>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Blog Post Dialog */}
+        <Dialog open={isBlogDialogOpen} onOpenChange={setIsBlogDialogOpen}>
+          <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>{editingPost?.id ? 'Edit Post' : 'Create New Post'}</DialogTitle>
+              <DialogDescription>
+                Write and manage your blog post content.
+              </DialogDescription>
+            </DialogHeader>
+            {editingPost && (
+              <form onSubmit={handleSavePost} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="post-title">Title</Label>
+                    <Input
+                      id="post-title"
+                      value={editingPost.title}
+                      onChange={(e) => setEditingPost({ ...editingPost, title: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="post-slug">Slug</Label>
+                    <Input
+                      id="post-slug"
+                      value={editingPost.slug}
+                      onChange={(e) => setEditingPost({ ...editingPost, slug: e.target.value })}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="post-excerpt">Excerpt</Label>
+                  <Textarea
+                    id="post-excerpt"
+                    value={editingPost.excerpt}
+                    onChange={(e) => setEditingPost({ ...editingPost, excerpt: e.target.value })}
+                    rows={2}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="post-content">Content (Markdown supported)</Label>
+                  <Textarea
+                    id="post-content"
+                    value={editingPost.content}
+                    onChange={(e) => setEditingPost({ ...editingPost, content: e.target.value })}
+                    className="min-h-[300px] font-mono"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="post-image">Cover Image URL</Label>
+                    <Input
+                      id="post-image"
+                      value={editingPost.coverImage}
+                      onChange={(e) => setEditingPost({ ...editingPost, coverImage: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="post-author">Author</Label>
+                    <Input
+                      id="post-author"
+                      value={editingPost.author}
+                      onChange={(e) => setEditingPost({ ...editingPost, author: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="post-tags">Tags (comma separated)</Label>
+                  <Input
+                    id="post-tags"
+                    value={Array.isArray(editingPost.tags) ? editingPost.tags.join(', ') : editingPost.tags}
+                    onChange={(e) => setEditingPost({ ...editingPost, tags: e.target.value })}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between p-4 border rounded-lg bg-gray-50">
+                  <div className="space-y-0.5">
+                    <Label htmlFor="post-published" className="text-base">Published</Label>
+                    <p className="text-sm text-muted-foreground">Make this post visible to the public</p>
+                  </div>
+                  <Switch
+                    id="post-published"
+                    checked={editingPost.published}
+                    onCheckedChange={(checked) => setEditingPost({ ...editingPost, published: checked })}
+                  />
+                </div>
+
+                <DialogFooter>
+                  <Button type="submit">Save Post</Button>
+                </DialogFooter>
+              </form>
+            )}
+          </DialogContent>
+        </Dialog>
+
       </SidebarProvider>
     </>
   );
