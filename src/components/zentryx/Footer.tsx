@@ -22,17 +22,28 @@ const Footer: React.FC = () => {
                     {/* Brand Column */}
                     <div className="lg:col-span-1">
                         <Link to="/" className="inline-flex items-center space-x-3 group mb-6">
-                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#3A7AFE] to-[#1D4ED8] flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                                <span className="text-2xl font-bold text-white">Z</span>
-                            </div>
-                            <div>
-                                <div className="text-xl font-bold text-white">
-                                    {branding.siteName}
+                            {branding.footerLogo || branding.logo || branding.siteIcon ? (
+                                <img
+                                    src={branding.footerLogo || branding.logo || branding.siteIcon}
+                                    alt={branding.siteName}
+                                    className="h-12 w-auto object-contain group-hover:scale-110 transition-transform duration-300"
+                                    style={{ width: `${branding.footerLogoWidth || branding.logoWidth || 140}px` }}
+                                />
+                            ) : (
+                                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#3A7AFE] to-[#1D4ED8] flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                                    <span className="text-2xl font-bold text-white">Z</span>
                                 </div>
-                                <div className="text-xs text-gray-400">
-                                    {branding.tagline}
+                            )}
+                            {branding.showSiteName && (
+                                <div>
+                                    <div className="text-xl font-bold text-white">
+                                        {branding.siteName}
+                                    </div>
+                                    <div className="text-xs text-gray-400">
+                                        {branding.tagline}
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                         </Link>
                         <p className="text-sm text-gray-400 leading-relaxed mb-6">
                             {branding.footerText}

@@ -35,17 +35,28 @@ const Header: React.FC = () => {
                 <div className="flex items-center justify-between h-20">
                     {/* Logo */}
                     <Link to="/" className="flex items-center space-x-3 group">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#3A7AFE] to-[#1D4ED8] flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                            <span className="text-2xl font-bold text-white">Z</span>
-                        </div>
-                        <div className="hidden sm:block">
-                            <div className="text-2xl font-bold bg-gradient-to-r from-[#3A7AFE] to-[#9333EA] bg-clip-text text-transparent">
-                                {branding.siteName}
+                        {branding.logo || branding.siteIcon ? (
+                            <img
+                                src={branding.logo || branding.siteIcon}
+                                alt={branding.siteName}
+                                className="h-12 w-auto object-contain group-hover:scale-110 transition-transform duration-300"
+                                style={{ width: `${branding.logoWidth || 140}px` }}
+                            />
+                        ) : (
+                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#3A7AFE] to-[#1D4ED8] flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                                <span className="text-2xl font-bold text-white">Z</span>
                             </div>
-                            <div className="text-xs text-gray-600 font-medium">
-                                {branding.tagline}
+                        )}
+                        {branding.showSiteName && (
+                            <div className="hidden sm:block">
+                                <div className="text-2xl font-bold bg-gradient-to-r from-[#3A7AFE] to-[#9333EA] bg-clip-text text-transparent">
+                                    {branding.siteName}
+                                </div>
+                                <div className="text-xs text-gray-600 font-medium">
+                                    {branding.tagline}
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </Link>
 
                     {/* Desktop Navigation */}
