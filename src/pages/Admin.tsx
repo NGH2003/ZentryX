@@ -62,7 +62,7 @@ const Admin = () => {
   const navigate = useNavigate();
   const { isMaintenanceMode, setMaintenanceMode, maintenanceMessage, updateMaintenanceMessage } = useMaintenance();
   const { branding, setBranding: setBrandingContext } = useBranding();
-  const { branding, setBranding: setBrandingContext } = useBranding();
+
   const { blogPosts, setBlogPosts, addPost, updatePost, deletePost } = useBlog();
   const { getDailyUsage, getCategoryDistribution, getTopTools, getTotalViews, getActiveUsers } = useAnalytics();
   const { config: adsConfig, updateConfig, updateSlot } = useAds();
