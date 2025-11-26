@@ -8,7 +8,8 @@ import { Rating } from "@/components/ui/rating";
 import { useRating } from "@/hooks/useRating";
 import { useToast } from "@/hooks/use-toast";
 import { tools, categories } from "@/data/tools";
-import Navigation from "@/components/Navigation";
+import Header from "@/components/zentryx/Header";
+import Footer from "@/components/zentryx/Footer";
 import { AdUnit } from "@/components/AdUnit";
 import { getToolUrl, slugify } from "@/lib/url-utils";
 
@@ -182,7 +183,7 @@ const ToolDetail = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      <Navigation />
+      <Header />
 
       {/* Header Ad */}
       <div className="max-w-7xl mx-auto px-4 mt-4">
@@ -390,6 +391,7 @@ const ToolDetail = () => {
       <div className="max-w-7xl mx-auto px-4 mb-8">
         <AdUnit slot="footer" />
       </div>
+      <Footer />
     </div>
   );
 };

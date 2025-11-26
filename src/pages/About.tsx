@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Target, Users, Zap, Shield, Code, Globe } from "lucide-react";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
+import Header from "@/components/zentryx/Header";
+import Footer from "@/components/zentryx/Footer";
 import { Badge } from "@/components/ui/badge";
 import { useBranding } from "@/contexts/BrandingContext";
 
@@ -11,7 +11,7 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      <Navigation />
+      <Header />
 
       {/* Hero Section */}
       <header className="relative pt-20 pb-16 px-4 overflow-hidden">
@@ -72,8 +72,8 @@ const About = () => {
               <CardContent>
                 <ul className="space-y-4 text-gray-600">
                   <li className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                      <Code className="w-4 h-4 text-green-600" />
+                    <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
+                      <Code className="w-4 h-4 text-indigo-600" />
                     </div>
                     <span>Development helpers and converters</span>
                   </li>
@@ -84,8 +84,8 @@ const About = () => {
                     <span>Text processing and formatting tools</span>
                   </li>
                   <li className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
-                      <Shield className="w-4 h-4 text-orange-600" />
+                    <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+                      <Shield className="w-4 h-4 text-purple-600" />
                     </div>
                     <span>Security and encoding tools</span>
                   </li>
@@ -101,32 +101,32 @@ const About = () => {
           </div>
 
           <div>
-            <Card className="shadow-lg border-2 border-transparent hover:border-green-200 hover:shadow-2xl transition-all duration-300 bg-white/80 backdrop-blur-sm h-full">
+            <Card className="shadow-lg border-2 border-transparent hover:border-indigo-200 hover:shadow-2xl transition-all duration-300 bg-white/80 backdrop-blur-sm h-full">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-2xl">
-                  <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                    <Users className="h-6 w-6 text-green-600" />
+                  <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
+                    <Users className="h-6 w-6 text-indigo-600" />
                   </div>
                   Our Values
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-8">
                 <div className="group">
-                  <h4 className="font-bold text-lg mb-2 flex items-center gap-2 group-hover:text-green-600 transition-colors">
+                  <h4 className="font-bold text-lg mb-2 flex items-center gap-2 group-hover:text-blue-600 transition-colors">
                     <Shield className="w-5 h-5" />
                     Privacy First
                   </h4>
                   <p className="text-gray-600 pl-7">All tools run locally in your browser. Your data never leaves your device, ensuring complete confidentiality.</p>
                 </div>
                 <div className="group">
-                  <h4 className="font-bold text-lg mb-2 flex items-center gap-2 group-hover:text-green-600 transition-colors">
+                  <h4 className="font-bold text-lg mb-2 flex items-center gap-2 group-hover:text-purple-600 transition-colors">
                     <Code className="w-5 h-5" />
                     Open Source
                   </h4>
                   <p className="text-gray-600 pl-7">Built with transparency and community contribution in mind. We believe in the power of shared knowledge.</p>
                 </div>
                 <div className="group">
-                  <h4 className="font-bold text-lg mb-2 flex items-center gap-2 group-hover:text-green-600 transition-colors">
+                  <h4 className="font-bold text-lg mb-2 flex items-center gap-2 group-hover:text-indigo-600 transition-colors">
                     <Users className="w-5 h-5" />
                     User Focused
                   </h4>

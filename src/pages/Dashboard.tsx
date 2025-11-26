@@ -176,15 +176,7 @@ const Dashboard = () => {
                     </div>
                   </Button>
                 </Link>
-                <Link to="/categories">
-                  <Button variant="outline" className="w-full justify-start h-auto py-4">
-                    <BookOpen className="w-5 h-5 mr-3" />
-                    <div className="text-left">
-                      <div className="font-medium">Categories</div>
-                      <div className="text-xs text-muted-foreground">Browse by category</div>
-                    </div>
-                  </Button>
-                </Link>
+
                 <Link to="/workspaces">
                   <Button variant="outline" className="w-full justify-start h-auto py-4">
                     <Activity className="w-5 h-5 mr-3" />

@@ -7,10 +7,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Bug, AlertTriangle, Info, CheckCircle2, Clock } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
+import Header from "@/components/zentryx/Header";
+import Footer from "@/components/zentryx/Footer";
 import { Badge } from "@/components/ui/badge";
 import { useBranding } from "@/contexts/BrandingContext";
+import { tools } from "@/data/tools";
 
 const BugReport = () => {
   const [formData, setFormData] = useState({
@@ -40,6 +41,18 @@ const BugReport = () => {
       return;
     }
 
+    // Create new bug report object
+    const newReport = {
+      id: Date.now(),
+      ...formData,
+      status: 'open',
+      createdAt: new Date().toISOString(),
+    };
+
+    // Save to localStorage
+    const existingReports = JSON.parse(localStorage.getItem('bugReports') || '[]');
+    localStorage.setItem('bugReports', JSON.stringify([newReport, ...existingReports]));
+
     toast({
       title: "Bug Report Submitted!",
       description: `Thank you for helping us improve ${siteName}. We'll investigate this issue.`,
@@ -67,7 +80,7 @@ const BugReport = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      <Navigation />
+      <Header />
 
       {/* Hero Section */}
       <header className="relative pt-20 pb-16 px-4 overflow-hidden">
@@ -78,13 +91,13 @@ const BugReport = () => {
         </div>
         <div className="max-w-7xl mx-auto text-center relative z-10">
           <div className="animate-fade-in">
-            <Badge className="mb-6 bg-gradient-to-r from-red-500 to-orange-600 text-white border-0 px-6 py-2 text-sm shadow-lg" role="status">
+            <Badge className="mb-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0 px-6 py-2 text-sm shadow-lg" role="status">
               <Bug className="w-4 h-4 inline mr-2" />
               <span aria-label="Announcement">Report Issue</span>
             </Badge>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-tight tracking-tight">
               <span className="text-gray-900">Report a </span>
-              <span className="bg-gradient-to-r from-red-600 via-orange-600 to-yellow-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
                 Bug
               </span>
             </h1>
@@ -101,8 +114,8 @@ const BugReport = () => {
             <Card className="shadow-xl border-2 border-transparent hover:border-blue-200 transition-all duration-300 bg-white/80 backdrop-blur-sm">
               <CardHeader className="border-b border-gray-100 bg-white/50">
                 <CardTitle className="flex items-center gap-3 text-2xl">
-                  <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
-                    <Bug className="h-6 w-6 text-red-600" />
+                  <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                    <Bug className="h-6 w-6 text-blue-600" />
                   </div>
                   Bug Report Form
                 </CardTitle>
@@ -139,13 +152,19 @@ const BugReport = () => {
 
                     <div className="space-y-2">
                       <Label htmlFor="toolAffected" className="text-base font-medium">Tool Affected</Label>
-                      <Input
-                        id="toolAffected"
-                        value={formData.toolAffected}
-                        onChange={(e) => handleInputChange("toolAffected", e.target.value)}
-                        placeholder="Which tool has the bug?"
-                        className="bg-white"
-                      />
+                      <Select value={formData.toolAffected} onValueChange={(value) => handleInputChange("toolAffected", value)}>
+                        <SelectTrigger className="bg-white">
+                          <SelectValue placeholder="Select the affected tool" />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-[300px]">
+                          <SelectItem value="general">General / Other</SelectItem>
+                          {tools.sort((a, b) => a.name.localeCompare(b.name)).map((tool) => (
+                            <SelectItem key={tool.id} value={tool.name}>
+                              {tool.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
 
@@ -219,7 +238,7 @@ const BugReport = () => {
                     />
                   </div>
 
-                  <Button type="submit" size="lg" className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 shadow-lg hover:shadow-xl transition-all font-bold">
+                  <Button type="submit" size="lg" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all font-bold">
                     <Bug className="mr-2 h-5 w-5" />
                     Submit Bug Report
                   </Button>

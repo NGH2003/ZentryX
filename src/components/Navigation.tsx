@@ -1,26 +1,41 @@
-import { Home, Wrench, Grid, Bug, BookOpen, Menu, X } from "lucide-react";
+import { Home, Wrench, Grid, Bug, BookOpen } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useBranding } from "@/contexts/BrandingContext";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 
 const Navigation = () => {
   const location = useLocation();
   const { branding } = useBranding();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isActive = (path: string) => location.pathname === path;
+
+  // Debug logging
+  useEffect(() => {
+    console.log("🎨 Navigation Branding State:", {
+      logo: branding.logo,
+      siteIcon: branding.siteIcon,
+      siteName: branding.siteName,
+      logoWidth: branding.logoWidth,
+      showSiteName: branding.showSiteName
+    });
+  }, [branding]);
 
   const navLinks = [
     { path: "/", label: "Home", icon: Home },
     { path: "/tools", label: "Tools", icon: Wrench },
-    { path: "/categories", label: "Categories", icon: Grid },
     { path: "/blog", label: "Blog", icon: BookOpen },
     { path: "/bug-report", label: "Report Bug", icon: Bug },
   ];
 
   // Get first letter of site name for fallback logo
   const firstLetter = (branding.siteName || "ToolBox").charAt(0).toUpperCase();
+
+  // Add timestamp to prevent caching issues with logo updates
+  const getImageUrl = (url: string) => {
+    if (!url) return url;
+    const separator = url.includes('?') ? '&' : '?';
+    return `${url}${separator}v=${Date.now()}`;
+  };
 
   return (
     <nav className="bg-white/95 backdrop-blur-xl border-b border-gray-200/50 sticky top-0 z-50 shadow-sm">
@@ -31,18 +46,34 @@ const Navigation = () => {
             {branding.logo ? (
               <img
                 key={branding.logo}
-                src={branding.logo}
+                src={getImageUrl(branding.logo)}
                 alt={`${branding.siteName} logo`}
                 style={{ width: `${branding.logoWidth}px` }}
                 className="h-auto object-contain transform transition-transform group-hover:scale-105"
+                onError={(e) => {
+                  console.error("❌ Logo failed to load:", branding.logo);
+                  const target = e.target as HTMLImageElement;
+                  if (!target.dataset.fallbackAttempted) {
+                    target.dataset.fallbackAttempted = 'true';
+                    target.src = branding.logo;
+                  }
+                }}
               />
             ) : branding.siteIcon ? (
               <img
                 key={branding.siteIcon}
-                src={branding.siteIcon}
+                src={getImageUrl(branding.siteIcon)}
                 alt={`${branding.siteName} icon`}
                 style={{ width: `${branding.logoWidth}px` }}
                 className="h-auto object-contain transform transition-transform group-hover:scale-105"
+                onError={(e) => {
+                  console.error("❌ Site icon failed to load:", branding.siteIcon);
+                  const target = e.target as HTMLImageElement;
+                  if (!target.dataset.fallbackAttempted) {
+                    target.dataset.fallbackAttempted = 'true';
+                    target.src = branding.siteIcon;
+                  }
+                }}
               />
             ) : (
               <div className="w-10 h-10 bg-gradient-to-br from-blue-600 via-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg transform transition-transform group-hover:scale-110 group-hover:rotate-3">
@@ -58,8 +89,7 @@ const Navigation = () => {
             )}
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
+          <div className="flex items-center space-x-1">
             {navLinks.map((link) => {
               const Icon = link.icon;
               const active = isActive(link.path);
@@ -81,46 +111,7 @@ const Navigation = () => {
               );
             })}
           </div>
-
-          {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </Button>
         </div>
-
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-200/50 bg-white">
-            <div className="px-4 py-3 space-y-1">
-              {navLinks.map((link) => {
-                const Icon = link.icon;
-                const active = isActive(link.path);
-                return (
-                  <Link
-                    key={link.path}
-                    to={link.path}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`
-                      flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-all
-                      ${active
-                        ? 'bg-gradient-to-r from-blue-50 to-purple-50 text-blue-600'
-                        : 'text-gray-600 hover:bg-gray-50'
-                      }
-                    `}
-                  >
-                    <Icon className="w-5 h-5" />
-                    <span>{link.label}</span>
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-        )}
       </div>
     </nav>
   );

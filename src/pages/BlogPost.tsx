@@ -1,7 +1,7 @@
 import { useParams, Link, Navigate } from "react-router-dom";
 import { useBlog } from "@/contexts/BlogContext";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
+import Header from "@/components/zentryx/Header";
+import Footer from "@/components/zentryx/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, User, ArrowLeft, Tag } from "lucide-react";
@@ -22,7 +22,7 @@ const BlogPost = () => {
 
     return (
         <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-            <Navigation />
+            <Header />
 
             <main className="flex-1 container mx-auto px-4 py-12">
                 <div className="max-w-4xl mx-auto">

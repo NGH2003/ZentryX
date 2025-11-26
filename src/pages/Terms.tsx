@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Users, AlertTriangle, Scale, Shield } from "lucide-react";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
+import { FileText, Users, AlertTriangle, Scale } from "lucide-react";
+import Header from "@/components/zentryx/Header";
+import Footer from "@/components/zentryx/Footer";
 import { Badge } from "@/components/ui/badge";
 import { useBranding } from "@/contexts/BrandingContext";
 
@@ -11,7 +11,7 @@ const Terms = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      <Navigation />
+      <Header />
 
       {/* Hero Section */}
       <header className="relative pt-20 pb-16 px-4 overflow-hidden">
@@ -93,11 +93,11 @@ const Terms = () => {
             </CardContent>
           </Card>
 
-          <Card className="shadow-lg border-2 border-transparent hover:border-orange-200 hover:shadow-2xl transition-all duration-300 bg-white/80 backdrop-blur-sm">
+          <Card className="shadow-lg border-2 border-transparent hover:border-indigo-200 hover:shadow-2xl transition-all duration-300 bg-white/80 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-2xl">
-                <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
-                  <AlertTriangle className="h-6 w-6 text-orange-600" />
+                <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
+                  <AlertTriangle className="h-6 w-6 text-indigo-600" />
                 </div>
                 Service Availability
               </CardTitle>
@@ -105,30 +105,30 @@ const Terms = () => {
             <CardContent className="space-y-4">
               <ul className="space-y-3 text-gray-600">
                 <li className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 rounded-full bg-orange-600 mt-2.5 flex-shrink-0"></div>
+                  <div className="w-1.5 h-1.5 rounded-full bg-indigo-600 mt-2.5 flex-shrink-0"></div>
                   <span>We strive to maintain 99.9% uptime but cannot guarantee uninterrupted service</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 rounded-full bg-orange-600 mt-2.5 flex-shrink-0"></div>
+                  <div className="w-1.5 h-1.5 rounded-full bg-indigo-600 mt-2.5 flex-shrink-0"></div>
                   <span>Scheduled maintenance may temporarily interrupt service</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 rounded-full bg-orange-600 mt-2.5 flex-shrink-0"></div>
+                  <div className="w-1.5 h-1.5 rounded-full bg-indigo-600 mt-2.5 flex-shrink-0"></div>
                   <span>We reserve the right to modify or discontinue services with notice</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 rounded-full bg-orange-600 mt-2.5 flex-shrink-0"></div>
+                  <div className="w-1.5 h-1.5 rounded-full bg-indigo-600 mt-2.5 flex-shrink-0"></div>
                   <span>Some tools may have usage limitations or rate limits</span>
                 </li>
               </ul>
             </CardContent>
           </Card>
 
-          <Card className="shadow-lg border-2 border-transparent hover:border-green-200 hover:shadow-2xl transition-all duration-300 bg-white/80 backdrop-blur-sm">
+          <Card className="shadow-lg border-2 border-transparent hover:border-blue-200 hover:shadow-2xl transition-all duration-300 bg-white/80 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-2xl">
-                <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                  <Scale className="h-6 w-6 text-green-600" />
+                <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                  <Scale className="h-6 w-6 text-blue-600" />
                 </div>
                 Disclaimer
               </CardTitle>

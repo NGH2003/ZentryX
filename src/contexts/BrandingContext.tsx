@@ -66,7 +66,7 @@ export const defaultBranding: BrandingSettings = {
         column3Title: "Support",
         column3Links: [
             { label: "Help Center", url: "/help-center" },
-            { label: "Bug Report", url: "/bug-report" },
+            { label: "Report Tool", url: "/bug-report" },
             { label: "Feature Request", url: "/feature-request" },
             { label: "Sitemap", url: "/sitemap" },
         ],

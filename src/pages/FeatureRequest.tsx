@@ -7,8 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Lightbulb, Rocket, ThumbsUp, Star, Zap, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
+import Header from "@/components/zentryx/Header";
+import Footer from "@/components/zentryx/Footer";
 import { Badge } from "@/components/ui/badge";
 import { useBranding } from "@/contexts/BrandingContext";
 
@@ -37,6 +37,18 @@ const FeatureRequest = () => {
       return;
     }
 
+    // Create new feature request object
+    const newRequest = {
+      id: Date.now(),
+      ...formData,
+      status: 'open',
+      createdAt: new Date().toISOString(),
+    };
+
+    // Save to localStorage
+    const existingRequests = JSON.parse(localStorage.getItem('featureRequests') || '[]');
+    localStorage.setItem('featureRequests', JSON.stringify([newRequest, ...existingRequests]));
+
     toast({
       title: "Feature Request Submitted!",
       description: "Thanks for your idea! We'll review it shortly.",
@@ -61,7 +73,7 @@ const FeatureRequest = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      <Navigation />
+      <Header />
 
       {/* Hero Section */}
       <header className="relative pt-20 pb-16 px-4 overflow-hidden">
@@ -72,13 +84,13 @@ const FeatureRequest = () => {
         </div>
         <div className="max-w-7xl mx-auto text-center relative z-10">
           <div className="animate-fade-in">
-            <Badge className="mb-6 bg-gradient-to-r from-yellow-500 to-orange-500 text-white border-0 px-6 py-2 text-sm shadow-lg" role="status">
+            <Badge className="mb-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0 px-6 py-2 text-sm shadow-lg" role="status">
               <Lightbulb className="w-4 h-4 inline mr-2" />
               <span aria-label="Announcement">Share Ideas</span>
             </Badge>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-tight tracking-tight">
               <span className="text-gray-900">Request a </span>
-              <span className="bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
                 Feature
               </span>
             </h1>
@@ -92,11 +104,11 @@ const FeatureRequest = () => {
       <div className="max-w-6xl mx-auto px-4 pb-20">
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <Card className="shadow-xl border-2 border-transparent hover:border-yellow-200 transition-all duration-300 bg-white/80 backdrop-blur-sm">
+            <Card className="shadow-xl border-2 border-transparent hover:border-blue-200 transition-all duration-300 bg-white/80 backdrop-blur-sm">
               <CardHeader className="border-b border-gray-100 bg-white/50">
                 <CardTitle className="flex items-center gap-3 text-2xl">
-                  <div className="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
-                    <Rocket className="h-6 w-6 text-yellow-600" />
+                  <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                    <Rocket className="h-6 w-6 text-blue-600" />
                   </div>
                   Feature Details
                 </CardTitle>
@@ -181,7 +193,7 @@ const FeatureRequest = () => {
                     />
                   </div>
 
-                  <Button type="submit" size="lg" className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 shadow-lg hover:shadow-xl transition-all font-bold text-white">
+                  <Button type="submit" size="lg" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all font-bold text-white">
                     <Star className="mr-2 h-5 w-5" />
                     Submit Request
                   </Button>

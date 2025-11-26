@@ -1,21 +1,32 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Menu, X } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Menu, X, ChevronDown } from 'lucide-react';
 import { useBranding } from '@/contexts/BrandingContext';
 import Button from './Button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header: React.FC = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [searchFocused, setSearchFocused] = useState(false);
     const { branding } = useBranding();
 
     const navigation = [
         { name: 'Home', href: '/' },
-        { name: 'Tools', href: '/tools' },
-        { name: 'Categories', href: '/categories' },
-        { name: 'About', href: '/about' },
+        { name: 'All Tools', href: '/tools' },
+        { name: 'Blog', href: '/blog' },
+        { name: 'Report Tools', href: '/bug-report' },
+    ];
+
+    const moreLinks = [
+        { name: 'About Us', href: '/about' },
         { name: 'Contact', href: '/contact' },
+        { name: 'Help Center', href: '/help-center' },
+        { name: 'Privacy Policy', href: '/privacy' },
+        { name: 'Terms of Service', href: '/terms' },
     ];
 
     return (
@@ -38,7 +49,7 @@ const Header: React.FC = () => {
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <nav className="hidden lg:flex items-center space-x-1">
+                    <nav className="hidden lg:flex items-center space-x-1 ml-auto">
                         {navigation.map((item) => (
                             <Link
                                 key={item.name}
@@ -48,38 +59,26 @@ const Header: React.FC = () => {
                                 {item.name}
                             </Link>
                         ))}
+
+                        {/* More Dropdown */}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger className="flex items-center px-4 py-2 text-sm font-semibold text-gray-700 hover:text-[#3A7AFE] hover:bg-blue-50 rounded-xl transition-all duration-200 outline-none">
+                                More <ChevronDown className="ml-1 h-4 w-4" />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-48 bg-white/95 backdrop-blur-lg border-gray-200 shadow-xl rounded-xl">
+                                {moreLinks.map((link) => (
+                                    <DropdownMenuItem key={link.name} asChild>
+                                        <Link
+                                            to={link.href}
+                                            className="w-full cursor-pointer px-4 py-2 text-sm font-medium text-gray-700 hover:text-[#3A7AFE] hover:bg-blue-50 focus:bg-blue-50 focus:text-[#3A7AFE]"
+                                        >
+                                            {link.name}
+                                        </Link>
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </nav>
-
-                    {/* Search Bar (Desktop) */}
-                    <div className="hidden md:flex items-center flex-1 max-w-md mx-8">
-                        <div className="relative w-full group">
-                            <div
-                                className={cn(
-                                    'absolute -inset-0.5 bg-gradient-to-r from-[#3A7AFE] to-[#9333EA] rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300',
-                                    searchFocused && 'opacity-30'
-                                )}
-                            />
-                            <div className="relative">
-                                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                                <input
-                                    type="search"
-                                    placeholder="Search tools..."
-                                    className="w-full pl-12 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-2xl text-sm focus:outline-none focus:border-[#3A7AFE] focus:bg-white transition-all duration-200"
-                                    onFocus={() => setSearchFocused(true)}
-                                    onBlur={() => setSearchFocused(false)}
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* CTA Button (Desktop) */}
-                    <div className="hidden lg:block">
-                        <Link to="/tools">
-                            <Button variant="primary" size="md">
-                                Explore Tools
-                            </Button>
-                        </Link>
-                    </div>
 
                     {/* Mobile Menu Button */}
                     <button
@@ -97,19 +96,6 @@ const Header: React.FC = () => {
                 {/* Mobile Menu */}
                 {mobileMenuOpen && (
                     <div className="lg:hidden py-4 border-t border-gray-200 animate-fade-in">
-                        {/* Mobile Search */}
-                        <div className="mb-4">
-                            <div className="relative">
-                                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                                <input
-                                    type="search"
-                                    placeholder="Search tools..."
-                                    className="w-full pl-12 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-2xl text-sm focus:outline-none focus:border-[#3A7AFE] focus:bg-white"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Mobile Navigation */}
                         <nav className="space-y-2">
                             {navigation.map((item) => (
                                 <Link
@@ -121,16 +107,21 @@ const Header: React.FC = () => {
                                     {item.name}
                                 </Link>
                             ))}
-                        </nav>
 
-                        {/* Mobile CTA */}
-                        <div className="mt-4">
-                            <Link to="/tools" onClick={() => setMobileMenuOpen(false)}>
-                                <Button variant="primary" size="md" fullWidth>
-                                    Explore Tools
-                                </Button>
-                            </Link>
-                        </div>
+                            <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                More
+                            </div>
+                            {moreLinks.map((link) => (
+                                <Link
+                                    key={link.name}
+                                    to={link.href}
+                                    className="block px-4 py-3 text-base font-semibold text-gray-700 hover:text-[#3A7AFE] hover:bg-blue-50 rounded-xl transition-all"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                >
+                                    {link.name}
+                                </Link>
+                            ))}
+                        </nav>
                     </div>
                 )}
             </div>

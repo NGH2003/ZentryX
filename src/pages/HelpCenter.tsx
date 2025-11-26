@@ -19,7 +19,8 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import Footer from "@/components/Footer";
+import Header from "@/components/zentryx/Header";
+import Footer from "@/components/zentryx/Footer";
 import { useBranding } from "@/contexts/BrandingContext";
 
 const HelpCenter = () => {
@@ -31,21 +32,21 @@ const HelpCenter = () => {
       title: "Getting Started",
       description: "New to our tools? Start here.",
       icon: Lightbulb,
-      color: "bg-yellow-100 text-yellow-600",
+      color: "bg-blue-100 text-blue-600",
       articles: ["How to create an account", "Navigating the dashboard", "Understanding tool limits"]
     },
     {
       title: "Account & Billing",
       description: "Manage your subscription and profile.",
       icon: Settings,
-      color: "bg-blue-100 text-blue-600",
+      color: "bg-indigo-100 text-indigo-600",
       articles: ["Changing your password", "Updating billing info", "Canceling subscription"]
     },
     {
       title: "Security & Privacy",
       description: "How we protect your data.",
       icon: Shield,
-      color: "bg-green-100 text-green-600",
+      color: "bg-purple-100 text-purple-600",
       articles: ["Two-factor authentication", "Data retention policy", "Privacy settings"]
     }
   ];
@@ -76,6 +77,7 @@ const HelpCenter = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 font-sans text-gray-900">
+      <Header />
       {/* Hero Section */}
       <header className="relative pt-20 pb-16 px-4 overflow-hidden">
         <div className="absolute inset-0">
@@ -134,13 +136,13 @@ const HelpCenter = () => {
           </Link>
 
           <Link to="/bug-report">
-            <Card className="hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border-2 border-transparent hover:border-red-200 bg-white/80 backdrop-blur-sm group">
+            <Card className="hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border-2 border-transparent hover:border-purple-200 bg-white/80 backdrop-blur-sm group">
               <CardContent className="flex items-center space-x-4 pt-6">
-                <div className="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Bug className="h-6 w-6 text-red-600" />
+                <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Bug className="h-6 w-6 text-purple-600" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg text-gray-900 group-hover:text-red-600 transition-colors">Report Bug</h3>
+                  <h3 className="font-bold text-lg text-gray-900 group-hover:text-purple-600 transition-colors">Report Bug</h3>
                   <p className="text-sm text-gray-500">Found an issue?</p>
                 </div>
               </CardContent>
@@ -148,13 +150,13 @@ const HelpCenter = () => {
           </Link>
 
           <Link to="/feature-request">
-            <Card className="hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border-2 border-transparent hover:border-yellow-200 bg-white/80 backdrop-blur-sm group">
+            <Card className="hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border-2 border-transparent hover:border-indigo-200 bg-white/80 backdrop-blur-sm group">
               <CardContent className="flex items-center space-x-4 pt-6">
-                <div className="w-12 h-12 rounded-xl bg-yellow-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Lightbulb className="h-6 w-6 text-yellow-600" />
+                <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Lightbulb className="h-6 w-6 text-indigo-600" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg text-gray-900 group-hover:text-yellow-600 transition-colors">Feature Request</h3>
+                  <h3 className="font-bold text-lg text-gray-900 group-hover:text-indigo-600 transition-colors">Feature Request</h3>
                   <p className="text-sm text-gray-500">Suggest improvements</p>
                 </div>
               </CardContent>

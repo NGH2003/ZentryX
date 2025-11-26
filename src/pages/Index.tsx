@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { Search, Wrench, Image, Calculator, RefreshCw, Shield, Code, Palette, Zap, Star, TrendingUp, Sparkles, ArrowRight, Check } from "lucide-react";
+import { Wrench, Image, Calculator, RefreshCw, Shield, Code, Palette, Zap, Star, TrendingUp, Sparkles, ArrowRight, Check } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
+import Header from "@/components/zentryx/Header";
+import Footer from "@/components/zentryx/Footer";
 import { useBranding } from "@/contexts/BrandingContext";
 import { useAds } from "@/contexts/AdsContext";
 import { AdUnit } from "@/components/AdUnit";
@@ -31,42 +30,42 @@ const toolCategories = [
         name: "Calculator Tools",
         icon: Calculator,
         count: 10,
-        gradient: "from-green-500 to-emerald-500",
+        gradient: "from-indigo-500 to-blue-500",
         description: "Quick calculations"
     },
     {
         name: "Converter Tools",
         icon: RefreshCw,
         count: 9,
-        gradient: "from-orange-500 to-red-500",
+        gradient: "from-pink-500 to-rose-500",
         description: "Convert between formats"
     },
     {
         name: "Security Tools",
         icon: Shield,
         count: 6,
-        gradient: "from-indigo-500 to-blue-500",
+        gradient: "from-violet-500 to-purple-500",
         description: "Passwords and encryption"
     },
     {
         name: "Developer Tools",
         icon: Wrench,
         count: 7,
-        gradient: "from-yellow-500 to-orange-500",
+        gradient: "from-cyan-500 to-blue-500",
         description: "Code utilities"
     },
     {
         name: "Design Tools",
         icon: Palette,
         count: 5,
-        gradient: "from-pink-500 to-rose-500",
+        gradient: "from-fuchsia-500 to-pink-500",
         description: "Colors and design"
     },
     {
         name: "Utility Tools",
         icon: Zap,
         count: 6,
-        gradient: "from-teal-500 to-cyan-500",
+        gradient: "from-teal-500 to-emerald-500",
         description: "Everyday utilities"
     },
 ];
@@ -88,21 +87,13 @@ const featuredTools = [
 ];
 
 const IndexZentryx = () => {
-    const [searchTerm, setSearchTerm] = useState("");
     const { branding } = useBranding();
     const { config: adsConfig } = useAds();
     const navigate = useNavigate();
 
-    const handleSearch = (value: string) => {
-        setSearchTerm(value);
-        if (value.trim()) {
-            navigate(`/tools?search=${encodeURIComponent(value.trim())}`);
-        }
-    };
-
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
-            <Navigation />
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+            <Header />
 
             {/* Header Ad */}
             {adsConfig.enabled && adsConfig.slots.header.enabled && (
@@ -132,7 +123,7 @@ const IndexZentryx = () => {
                         <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 leading-tight">
                             <span className="text-gray-900">40+ Free Online Tools.</span>
                             <br />
-                            <span className="bg-gradient-to-r from-[#3A7AFE] via-[#9333EA] to-[#F59E0B] bg-clip-text text-transparent">
+                            <span className="bg-gradient-to-r from-[#3A7AFE] via-[#9333EA] to-[#DB2777] bg-clip-text text-transparent">
                                 Fast. Simple. Trusted.
                             </span>
                         </h1>
@@ -145,22 +136,7 @@ const IndexZentryx = () => {
                             No signup. No payment. No limits. Just results.
                         </p>
 
-                        {/* Search Bar */}
-                        <div className="max-w-3xl mx-auto mb-10">
-                            <div className="relative group">
-                                <div className="absolute -inset-1 bg-gradient-to-r from-[#3A7AFE] via-[#9333EA] to-[#F59E0B] rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-all duration-500"></div>
-                                <div className="relative bg-white rounded-2xl shadow-2xl p-2">
-                                    <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6 z-10" />
-                                    <Input
-                                        type="search"
-                                        placeholder="Search tools... (Password Generator, Unit Converter, Text Tools)"
-                                        value={searchTerm}
-                                        onChange={(e) => handleSearch(e.target.value)}
-                                        className="pl-16 pr-6 py-7 text-lg rounded-xl border-0 focus:ring-4 focus:ring-[#3A7AFE]/30 bg-white"
-                                    />
-                                </div>
-                            </div>
-                        </div>
+
 
                         {/* CTA Buttons */}
                         <div className="flex flex-col sm:flex-row justify-center gap-4">
@@ -289,7 +265,7 @@ const IndexZentryx = () => {
                         {/* Fast */}
                         <Card className="card-zentryx text-center group">
                             <div className="p-8">
-                                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 flex items-center justify-center group-hover:scale-110 transition-transform">
                                     <Zap className="w-10 h-10 text-white" />
                                 </div>
                                 <h3 className="text-2xl font-bold text-gray-900 mb-3">Fast</h3>
@@ -366,7 +342,7 @@ const IndexZentryx = () => {
             </section>
 
             {/* ========== CTA SECTION ========== */}
-            <section className="py-20 px-4 bg-gradient-to-r from-[#3A7AFE] via-[#9333EA] to-[#F59E0B] relative overflow-hidden">
+            <section className="py-20 px-4 bg-gradient-to-r from-[#3A7AFE] via-[#9333EA] to-[#DB2777] relative overflow-hidden">
                 <div className="absolute inset-0 bg-black/10"></div>
                 <div className="max-w-4xl mx-auto text-center relative z-10">
                     <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">

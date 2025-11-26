@@ -35,52 +35,52 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 p-4">
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-[40%] -left-[20%] w-[70%] h-[70%] rounded-full bg-blue-500/10 blur-3xl" />
-        <div className="absolute -bottom-[40%] -right-[20%] w-[70%] h-[70%] rounded-full bg-purple-500/10 blur-3xl" />
+        <div className="absolute -top-[40%] -left-[20%] w-[70%] h-[70%] rounded-full bg-blue-200/30 blur-3xl" />
+        <div className="absolute -bottom-[40%] -right-[20%] w-[70%] h-[70%] rounded-full bg-purple-200/30 blur-3xl" />
       </div>
 
-      <Card className="w-full max-w-md border-slate-700 bg-slate-800/50 backdrop-blur-xl shadow-2xl relative z-10">
+      <Card className="w-full max-w-md border-white/50 bg-white/80 backdrop-blur-xl shadow-2xl relative z-10">
         <CardHeader className="space-y-1 text-center pb-8">
           <div className="mx-auto w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-blue-500/20">
             <ShieldCheck className="w-6 h-6 text-white" />
           </div>
-          <CardTitle className="text-2xl font-bold text-white tracking-tight">Admin Portal</CardTitle>
-          <CardDescription className="text-slate-400">
+          <CardTitle className="text-2xl font-bold text-gray-900 tracking-tight">Admin Portal</CardTitle>
+          <CardDescription className="text-gray-500">
             Enter your credentials to access the dashboard
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSignIn} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="username" className="text-slate-300">Username</Label>
+              <Label htmlFor="username" className="text-gray-700">Username</Label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-4 w-4 text-slate-500 group-focus-within:text-blue-500 transition-colors" />
+                  <User className="h-4 w-4 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
                 </div>
                 <Input
                   id="username"
                   name="username"
                   type="text"
                   placeholder="admin"
-                  className="pl-10 bg-slate-900/50 border-slate-700 text-white placeholder:text-slate-600 focus:border-blue-500 focus:ring-blue-500/20 transition-all"
+                  className="pl-10 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500/20 transition-all"
                   required
                 />
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-slate-300">Password</Label>
+              <Label htmlFor="password" className="text-gray-700">Password</Label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-4 w-4 text-slate-500 group-focus-within:text-blue-500 transition-colors" />
+                  <Lock className="h-4 w-4 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
                 </div>
                 <Input
                   id="password"
                   name="password"
                   type="password"
                   placeholder="••••••••"
-                  className="pl-10 bg-slate-900/50 border-slate-700 text-white placeholder:text-slate-600 focus:border-blue-500 focus:ring-blue-500/20 transition-all"
+                  className="pl-10 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500/20 transition-all"
                   required
                 />
               </div>

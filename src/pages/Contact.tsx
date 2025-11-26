@@ -3,11 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, MessageSquare, Send, Clock, MapPin, Phone } from "lucide-react";
+import { Mail, MessageSquare, Send, Clock } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
+import Header from "@/components/zentryx/Header";
+import Footer from "@/components/zentryx/Footer";
 import { Badge } from "@/components/ui/badge";
 import { useBranding } from "@/contexts/BrandingContext";
 
@@ -58,7 +58,7 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      <Navigation />
+      <Header />
 
       {/* Hero Section */}
       <header className="relative pt-20 pb-16 px-4 overflow-hidden">
@@ -181,46 +181,46 @@ const Contact = () => {
               </CardContent>
             </Card>
 
-            <Card className="shadow-lg border-2 border-transparent hover:border-green-200 hover:shadow-2xl transition-all duration-300 bg-white/80 backdrop-blur-sm">
+            <Card className="shadow-lg border-2 border-transparent hover:border-blue-200 hover:shadow-2xl transition-all duration-300 bg-white/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-2xl">
-                  <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                    <Clock className="h-6 w-6 text-green-600" />
+                  <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                    <Clock className="h-6 w-6 text-blue-600" />
                   </div>
                   Response Times
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-3 text-gray-600">
-                  <li className="flex items-center justify-between p-2 rounded-lg hover:bg-green-50 transition-colors">
+                  <li className="flex items-center justify-between p-2 rounded-lg hover:bg-blue-50 transition-colors">
                     <span className="font-medium">General inquiries</span>
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">24 hours</Badge>
+                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">24 hours</Badge>
                   </li>
-                  <li className="flex items-center justify-between p-2 rounded-lg hover:bg-green-50 transition-colors">
+                  <li className="flex items-center justify-between p-2 rounded-lg hover:bg-blue-50 transition-colors">
                     <span className="font-medium">Bug reports</span>
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">12 hours</Badge>
+                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">12 hours</Badge>
                   </li>
-                  <li className="flex items-center justify-between p-2 rounded-lg hover:bg-green-50 transition-colors">
+                  <li className="flex items-center justify-between p-2 rounded-lg hover:bg-blue-50 transition-colors">
                     <span className="font-medium">Feature requests</span>
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">48 hours</Badge>
+                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">48 hours</Badge>
                   </li>
-                  <li className="flex items-center justify-between p-2 rounded-lg hover:bg-green-50 transition-colors">
+                  <li className="flex items-center justify-between p-2 rounded-lg hover:bg-blue-50 transition-colors">
                     <span className="font-medium">Account issues</span>
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">6 hours</Badge>
+                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">6 hours</Badge>
                   </li>
                 </ul>
               </CardContent>
             </Card>
 
-            <Card className="shadow-lg border-2 border-transparent hover:border-orange-200 hover:shadow-2xl transition-all duration-300 bg-white/80 backdrop-blur-sm">
+            <Card className="shadow-lg border-2 border-transparent hover:border-indigo-200 hover:shadow-2xl transition-all duration-300 bg-white/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-xl">Alternative Ways to Reach Us</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="group p-3 rounded-xl hover:bg-orange-50 transition-colors cursor-pointer">
-                  <h4 className="font-bold text-gray-900 mb-1 flex items-center gap-2 group-hover:text-orange-600">
-                    <div className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center">
-                      <MessageSquare className="w-3 h-3 text-orange-600" />
+                <div className="group p-3 rounded-xl hover:bg-indigo-50 transition-colors cursor-pointer">
+                  <h4 className="font-bold text-gray-900 mb-1 flex items-center gap-2 group-hover:text-indigo-600">
+                    <div className="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center">
+                      <MessageSquare className="w-3 h-3 text-indigo-600" />
                     </div>
                     Bug Reports
                   </h4>

@@ -18,7 +18,6 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import Index from "./pages/Index";
 import Tools from "./pages/Tools";
 import ToolDetail from "./pages/ToolDetail";
-import Categories from "./pages/Categories";
 import Admin from "./pages/Admin";
 import About from "./pages/About";
 import Privacy from "./pages/Privacy";
@@ -52,7 +51,6 @@ function AppRoutes() {
       <Route path="/" element={<Index />} />
       <Route path="/tools" element={<Tools />} />
       <Route path="/tools/:category/:toolName" element={<ToolDetail />} />
-      <Route path="/categories" element={<Categories />} />
       <Route path="/backend" element={<AdminRoute element={<Admin />} />} />
       <Route path="/auth" element={<Auth />} />
       <Route path="/login" element={<AdminRoute element={<Auth />} />} />
