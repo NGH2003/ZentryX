@@ -392,7 +392,7 @@ const Admin = () => {
                         </div>
                         <div className="flex items-center gap-2">
                           <Button
-                            variant="ghost"
+                            variant="outline"
                             size="icon"
                             onClick={() => {
                               setEditingTool(tool);
@@ -921,7 +921,7 @@ const Admin = () => {
                             {post.published ? "Published" : "Draft"}
                           </Badge>
                           <Button
-                            variant="ghost"
+                            variant="outline"
                             size="icon"
                             onClick={() => {
                               setEditingPost(post);
