@@ -50,7 +50,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus, Pencil, Trash2, X, Save } from "lucide-react";
+import { Plus, Pencil, Trash2, X, Save, Clock, FileText, CheckCircle, AlertTriangle } from "lucide-react";
+
+interface SystemLog {
+  id: string;
+  action: string;
+  details: string;
+  timestamp: string;
+  user: string;
+  type: "info" | "success" | "warning" | "error";
+}
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState(() => localStorage.getItem("adminActiveTab") || "overview");
@@ -93,9 +102,90 @@ const Admin = () => {
   const [isBlogDialogOpen, setIsBlogDialogOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<any>(null);
 
+  // System Logs state
+  const [systemLogs, setSystemLogs] = useState<SystemLog[]>(() => {
+    const saved = localStorage.getItem("systemLogs");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  // Settings state
+  const [settings, setSettings] = useState(() => {
+    const saved = localStorage.getItem("adminSettings");
+    return saved ? JSON.parse(saved) : {
+      emailAlerts: true,
+      pushNotifications: true,
+      marketingEmails: false,
+      notificationEmail: "",
+      twoFactor: false,
+      sessionTimeout: 30
+    };
+  });
+
+  // Password change state
+  const [passwordData, setPasswordData] = useState({
+    current: "",
+    new: "",
+    confirm: ""
+  });
+
   useEffect(() => {
     localStorage.setItem("toolOverrides", JSON.stringify(toolOverrides));
   }, [toolOverrides]);
+
+  useEffect(() => {
+    localStorage.setItem("systemLogs", JSON.stringify(systemLogs));
+  }, [systemLogs]);
+
+  useEffect(() => {
+    localStorage.setItem("adminSettings", JSON.stringify(settings));
+  }, [settings]);
+
+  const logAction = (action: string, details: string, type: "info" | "success" | "warning" | "error" = "info") => {
+    const newLog: SystemLog = {
+      id: Date.now().toString(),
+      action,
+      details,
+      timestamp: new Date().toISOString(),
+      user: user?.email || "Admin",
+      type
+    };
+    setSystemLogs(prev => [newLog, ...prev].slice(0, 100));
+  };
+
+  const updateSettings = (key: string, value: any) => {
+    setSettings(prev => ({ ...prev, [key]: value }));
+    logAction("Settings Updated", `Updated ${key} to ${value}`, "info");
+  };
+
+  const handleUpdatePassword = async () => {
+    if (passwordData.new !== passwordData.confirm) {
+      toast.error("New passwords do not match");
+      return;
+    }
+    if (passwordData.new.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.updateUser({ password: passwordData.new });
+      if (error) throw error;
+
+      toast.success("Password updated successfully");
+      logAction("Security", "Password updated successfully", "success");
+      setPasswordData({ current: "", new: "", confirm: "" });
+    } catch (error: any) {
+      console.error("Error updating password:", error);
+      // Fallback for mock auth
+      if (user?.email === "admin@toolbox.com") {
+        toast.success("Password updated successfully (Mock)");
+        logAction("Security", "Password updated successfully (Mock)", "success");
+        setPasswordData({ current: "", new: "", confirm: "" });
+      } else {
+        toast.error(error.message || "Failed to update password");
+      }
+    }
+  };
 
   const handleSaveTool = (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,6 +196,7 @@ const Admin = () => {
       [editingTool.id]: editingTool
     }));
     setIsToolDialogOpen(false);
+    logAction("Tool Updated", `Updated tool: ${editingTool.name}`, "success");
     toast.success("Tool updated successfully");
   };
 
@@ -118,9 +209,11 @@ const Admin = () => {
 
     if (editingPost.id) {
       updatePost(editingPost.id, formData);
+      logAction("Blog Updated", `Updated post: ${formData.title}`, "success");
       toast.success("Post updated successfully");
     } else {
       addPost(formData);
+      logAction("Blog Created", `Created new post: ${formData.title}`, "success");
       toast.success("Post created successfully");
     }
     setIsBlogDialogOpen(false);
@@ -183,6 +276,7 @@ const Admin = () => {
 
   const handleSaveBranding = () => {
     setBrandingContext(localBranding);
+    logAction("Branding Updated", "Website branding configuration updated", "info");
     toast.success("Branding updated successfully!");
   };
 
@@ -773,7 +867,56 @@ const Admin = () => {
                 <CardDescription>View system activity logs</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground">System logs - Coming soon</p>
+                <div className="space-y-4">
+                  {systemLogs.length === 0 ? (
+                    <p className="text-muted-foreground text-center py-8">No logs available</p>
+                  ) : (
+                    <div className="border rounded-lg overflow-hidden">
+                      <table className="w-full text-sm text-left">
+                        <thead className="bg-gray-50 border-b">
+                          <tr>
+                            <th className="px-4 py-3 font-medium">Timestamp</th>
+                            <th className="px-4 py-3 font-medium">Action</th>
+                            <th className="px-4 py-3 font-medium">Details</th>
+                            <th className="px-4 py-3 font-medium">User</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y">
+                          {systemLogs.map((log) => (
+                            <tr key={log.id} className="hover:bg-gray-50">
+                              <td className="px-4 py-3 text-muted-foreground">
+                                {new Date(log.timestamp).toLocaleString()}
+                              </td>
+                              <td className="px-4 py-3 font-medium">
+                                <div className="flex items-center gap-2">
+                                  {log.type === 'success' && <CheckCircle className="w-4 h-4 text-green-500" />}
+                                  {log.type === 'warning' && <AlertTriangle className="w-4 h-4 text-yellow-500" />}
+                                  {log.type === 'error' && <X className="w-4 h-4 text-red-500" />}
+                                  {log.type === 'info' && <FileText className="w-4 h-4 text-blue-500" />}
+                                  {log.action}
+                                </div>
+                              </td>
+                              <td className="px-4 py-3">{log.details}</td>
+                              <td className="px-4 py-3 text-muted-foreground">{log.user}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      if (confirm("Clear all logs?")) {
+                        setSystemLogs([]);
+                        toast.success("Logs cleared");
+                      }
+                    }}
+                  >
+                    Clear Logs
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -1095,7 +1238,10 @@ const Admin = () => {
                     <Label className="text-base font-semibold">Email Alerts</Label>
                     <p className="text-sm text-muted-foreground">Receive emails about critical system events</p>
                   </div>
-                  <Switch defaultChecked onCheckedChange={(c) => toast.success(c ? "Email alerts enabled" : "Email alerts disabled")} />
+                  <Switch
+                    checked={settings.emailAlerts}
+                    onCheckedChange={(c) => updateSettings("emailAlerts", c)}
+                  />
                 </div>
 
                 <div className="flex items-center justify-between p-4 border rounded-lg">
@@ -1103,7 +1249,10 @@ const Admin = () => {
                     <Label className="text-base font-semibold">Push Notifications</Label>
                     <p className="text-sm text-muted-foreground">Receive push notifications for real-time updates</p>
                   </div>
-                  <Switch defaultChecked onCheckedChange={(c) => toast.success(c ? "Push notifications enabled" : "Push notifications disabled")} />
+                  <Switch
+                    checked={settings.pushNotifications}
+                    onCheckedChange={(c) => updateSettings("pushNotifications", c)}
+                  />
                 </div>
 
                 <div className="flex items-center justify-between p-4 border rounded-lg">
@@ -1111,7 +1260,10 @@ const Admin = () => {
                     <Label className="text-base font-semibold">Marketing Emails</Label>
                     <p className="text-sm text-muted-foreground">Receive updates about new features and promotions</p>
                   </div>
-                  <Switch onCheckedChange={(c) => toast.success(c ? "Marketing emails enabled" : "Marketing emails disabled")} />
+                  <Switch
+                    checked={settings.marketingEmails}
+                    onCheckedChange={(c) => updateSettings("marketingEmails", c)}
+                  />
                 </div>
 
                 <div className="space-y-4 pt-4 border-t">
@@ -1120,8 +1272,12 @@ const Admin = () => {
                     <div className="space-y-2">
                       <Label>Notification Email</Label>
                       <div className="flex gap-2">
-                        <Input defaultValue={`admin@${branding.siteName.toLowerCase().replace(/\s+/g, "")}.com`} />
-                        <Button variant="outline">Update</Button>
+                        <Input
+                          value={settings.notificationEmail}
+                          onChange={(e) => setSettings(prev => ({ ...prev, notificationEmail: e.target.value }))}
+                          placeholder={`admin@${branding.siteName.toLowerCase().replace(/\s+/g, "")}.com`}
+                        />
+                        <Button variant="outline" onClick={() => updateSettings("notificationEmail", settings.notificationEmail)}>Update</Button>
                       </div>
                     </div>
                   </div>
@@ -1145,17 +1301,32 @@ const Admin = () => {
                   <div className="grid gap-4 max-w-md">
                     <div className="space-y-2">
                       <Label htmlFor="current-password">Current Password</Label>
-                      <Input id="current-password" type="password" />
+                      <Input
+                        id="current-password"
+                        type="password"
+                        value={passwordData.current}
+                        onChange={(e) => setPasswordData(prev => ({ ...prev, current: e.target.value }))}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="new-password">New Password</Label>
-                      <Input id="new-password" type="password" />
+                      <Input
+                        id="new-password"
+                        type="password"
+                        value={passwordData.new}
+                        onChange={(e) => setPasswordData(prev => ({ ...prev, new: e.target.value }))}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="confirm-password">Confirm New Password</Label>
-                      <Input id="confirm-password" type="password" />
+                      <Input
+                        id="confirm-password"
+                        type="password"
+                        value={passwordData.confirm}
+                        onChange={(e) => setPasswordData(prev => ({ ...prev, confirm: e.target.value }))}
+                      />
                     </div>
-                    <Button onClick={() => toast.success("Password updated successfully")}>Update Password</Button>
+                    <Button onClick={handleUpdatePassword}>Update Password</Button>
                   </div>
                 </div>
 
@@ -1168,12 +1339,20 @@ const Admin = () => {
                       <Label className="font-semibold">Two-Factor Authentication</Label>
                       <p className="text-sm text-muted-foreground">Add an extra layer of security to your account</p>
                     </div>
-                    <Switch onCheckedChange={(checked) => toast.info(checked ? "2FA Enabled" : "2FA Disabled")} />
+                    <Switch
+                      checked={settings.twoFactor}
+                      onCheckedChange={(checked) => updateSettings("twoFactor", checked)}
+                    />
                   </div>
 
                   <div className="space-y-2">
                     <Label>Session Timeout (minutes)</Label>
-                    <Input type="number" defaultValue={30} className="max-w-[200px]" />
+                    <Input
+                      type="number"
+                      value={settings.sessionTimeout}
+                      onChange={(e) => updateSettings("sessionTimeout", parseInt(e.target.value))}
+                      className="max-w-[200px]"
+                    />
                   </div>
                 </div>
               </CardContent>
