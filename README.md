@@ -1,73 +1,170 @@
-# Welcome to your Lovable project
+# ZENTRYX - Smart Tools. Zero Effort.
 
-## Project info
+![ZENTRYX](https://img.shields.io/badge/ZENTRYX-40%2B%20Tools-3A7AFE?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+![React](https://img.shields.io/badge/React-18.3.1-61DAFB?style=for-the-badge&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.5.3-3178C6?style=for-the-badge&logo=typescript)
 
-**URL**: https://lovable.dev/projects/ed5125ef-aaad-46e0-9f1d-54abc6c6dcb9
+**ZENTRYX** is a comprehensive collection of 40+ free online tools designed for developers, designers, and everyday users. Fast. Simple. Trusted.
 
-## How can I edit this code?
+🌐 **Live Site**: [https://zentryx.in](https://zentryx.in)  
+📦 **Repository**: [https://github.com/NGH2003/toolbox-zenith-web](https://github.com/NGH2003/toolbox-zenith-web)
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## ✨ Features
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/ed5125ef-aaad-46e0-9f1d-54abc6c6dcb9) and start prompting.
+- **40+ Free Tools** - Password generators, calculators, converters, color pickers, QR code generators, and more
+- **Beautiful UI** - Modern, responsive design with smooth animations and glassmorphism effects
+- **Zero Signup Required** - All tools are instantly accessible without registration
+- **Fast & Lightweight** - Optimized performance with Vite and React
+- **SEO Optimized** - Comprehensive meta tags and structured data for better discoverability
+- **Dark Mode Ready** - Theme support with next-themes
+- **Mobile Responsive** - Works seamlessly on all devices
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## 🛠️ Tech Stack
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+This project is built with modern web technologies:
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- **Framework**: [React](https://react.dev/) 18.3.1
+- **Build Tool**: [Vite](https://vitejs.dev/) 5.4.1
+- **Language**: [TypeScript](https://www.typescriptlang.org/) 5.5.3
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) 3.4.11
+- **UI Components**: [shadcn/ui](https://ui.shadcn.com/) + [Radix UI](https://www.radix-ui.com/)
+- **Routing**: [React Router](https://reactrouter.com/) 6.26.2
+- **Animations**: [Framer Motion](https://www.framer.com/motion/) 12.23.24
+- **Icons**: [Lucide React](https://lucide.dev/) 0.462.0
+- **Backend**: [Supabase](https://supabase.com/) 2.58.0
+- **State Management**: [TanStack Query](https://tanstack.com/query) 5.56.2
 
-Follow these steps:
+---
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 🚀 Getting Started
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Prerequisites
 
-# Step 3: Install the necessary dependencies.
-npm i
+- **Node.js** (v18 or higher) - [Install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- **npm** or **yarn**
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/NGH2003/toolbox-zenith-web.git
+   cd toolbox-zenith-web
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   
+   Create a `.env` file in the root directory:
+   ```env
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
+
+4. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+   The app will be available at `http://localhost:5173`
+
+---
+
+## 📜 Available Scripts
+
+- `npm run dev` - Start development server with hot reload
+- `npm run build` - Build for production
+- `npm run build:dev` - Build in development mode
+- `npm run preview` - Preview production build locally
+- `npm run lint` - Run ESLint for code quality
+
+---
+
+## 📂 Project Structure
+
+```
+zentryx-tools/
+├── public/              # Static assets
+├── src/
+│   ├── components/      # Reusable React components
+│   │   ├── zentryx/    # Custom ZENTRYX components
+│   │   └── ui/         # shadcn/ui components
+│   ├── contexts/        # React contexts (Branding, Auth, etc.)
+│   ├── hooks/           # Custom React hooks
+│   ├── pages/           # Page components
+│   ├── lib/             # Utility functions
+│   ├── App.tsx          # Main app component
+│   ├── main.tsx         # Entry point
+│   └── index.css        # Global styles & design system
+├── index.html           # HTML template with SEO meta tags
+├── package.json         # Dependencies and scripts
+├── tsconfig.json        # TypeScript configuration
+├── tailwind.config.ts   # Tailwind CSS configuration
+└── vite.config.ts       # Vite configuration
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🎨 Design System
 
-**Use GitHub Codespaces**
+ZENTRYX uses a comprehensive design system with:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- **Color Palette**: Primary (#3A7AFE), Secondary (#9333EA), Accent (#10B981)
+- **Typography**: Inter font family with multiple weights
+- **Spacing**: Consistent spacing scale
+- **Components**: Pre-built, reusable components with variants
+- **Animations**: Smooth transitions and micro-interactions
 
-## What technologies are used for this project?
+See `src/index.css` for the complete design system.
 
-This project is built with:
+---
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 🤝 Contributing
 
-## How can I deploy this project?
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-Simply open [Lovable](https://lovable.dev/projects/ed5125ef-aaad-46e0-9f1d-54abc6c6dcb9) and click on Share -> Publish.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## Can I connect a custom domain to my Lovable project?
+---
 
-Yes, you can!
+## 📄 License
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+This project is licensed under the MIT License.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+---
+
+## 🙏 Acknowledgments
+
+- Built with [shadcn/ui](https://ui.shadcn.com/)
+- Icons by [Lucide](https://lucide.dev/)
+- Hosted on [Cloudflare Pages](https://pages.cloudflare.com/)
+
+---
+
+## 📧 Contact
+
+For questions, feedback, or support:
+
+- **Website**: [https://zentryx.in/contact](https://zentryx.in/contact)
+- **Email**: support@zentryx.in
+- **GitHub**: [@NGH2003](https://github.com/NGH2003)
+
+---
+
+<div align="center">
+  <strong>Made with ❤️ by the ZENTRYX Team</strong>
+  <br>
+  <sub>Smart Tools. Zero Effort.</sub>
+</div>

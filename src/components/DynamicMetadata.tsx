@@ -10,7 +10,7 @@ export const DynamicMetadata = () => {
         // Update document title based on current page
         const getPageTitle = () => {
             const path = location.pathname;
-            const siteName = branding.siteName || 'ToolBox Zenith';
+            const siteName = branding.siteName || 'ZENTRYX';
 
             if (path === '/') return siteName;
             if (path === '/tools') return `Tools - ${siteName}`;
