@@ -69,7 +69,6 @@ function AppRoutes() {
       {/* Redirect old tool URLs to tools page */}
       <Route path="/tool/:id" element={<Navigate to="/tools" replace />} />
       <Route path="/tool/:id/detail" element={<Navigate to="/tools" replace />} />
-      <Route path="/tools/:category/:toolName/detail" element={<Navigate to="/tools/:category/:toolName" replace />} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>
