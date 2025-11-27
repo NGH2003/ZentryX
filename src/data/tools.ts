@@ -61,7 +61,7 @@ export const tools = [
     tags: ["json", "formatter", "validator"],
     featured: true
   },
-  
+
   // Text Tools
   {
     id: 6,
@@ -159,7 +159,7 @@ export const tools = [
     tags: ["slug", "url", "seo"],
     featured: false
   },
-  
+
   // Unit Conversion Tools
   {
     id: 15,
@@ -221,7 +221,7 @@ export const tools = [
     tags: ["volume", "liquid", "converter"],
     featured: false
   },
-  
+
   // Math & Number Tools
   {
     id: 20,
@@ -283,7 +283,7 @@ export const tools = [
     tags: ["roman", "numeral", "converter"],
     featured: false
   },
-  
+
   // Calculator Tools
   {
     id: 25,
@@ -345,7 +345,7 @@ export const tools = [
     tags: ["tip", "bill", "calculator"],
     featured: false
   },
-  
+
   // Color & Design Tools
   {
     id: 30,
@@ -407,7 +407,7 @@ export const tools = [
     tags: ["contrast", "accessibility", "color"],
     featured: false
   },
-  
+
   // Format & Beautify Tools
   {
     id: 35,
@@ -457,7 +457,7 @@ export const tools = [
     tags: ["javascript", "beautify", "formatter"],
     featured: false
   },
-  
+
   // SEO & Web Tools
   {
     id: 39,
@@ -495,7 +495,7 @@ export const tools = [
     tags: ["robots", "seo", "crawler"],
     featured: false
   },
-  
+
   // Misc Tools
   {
     id: 42,
@@ -532,20 +532,116 @@ export const tools = [
     uses: 0,
     tags: ["timer", "stopwatch", "time"],
     featured: false
+  },
+  {
+    id: 45,
+    name: "Markdown to HTML",
+    description: "Convert Markdown text to raw HTML instantly",
+    icon: "📝",
+    category: "Text Tools",
+    rating: 0,
+    ratingCount: 0,
+    uses: 0,
+    tags: ["markdown", "html", "converter"],
+    featured: false
+  },
+  {
+    id: 46,
+    name: "Unix Timestamp Converter",
+    description: "Convert between Unix timestamps and human-readable dates",
+    icon: "🕰️",
+    category: "Utilities",
+    rating: 0,
+    ratingCount: 0,
+    uses: 0,
+    tags: ["unix", "timestamp", "date"],
+    featured: false
+  },
+  {
+    id: 47,
+    name: "Aspect Ratio Calculator",
+    description: "Calculate aspect ratios and dimensions for images and video",
+    icon: "📐",
+    category: "Calculators",
+    rating: 0,
+    ratingCount: 0,
+    uses: 0,
+    tags: ["aspect", "ratio", "calculator", "image"],
+    featured: false
+  },
+  {
+    id: 48,
+    name: "Discount Calculator",
+    description: "Calculate final price after discount and savings amount",
+    icon: "🏷️",
+    category: "Calculators",
+    rating: 0,
+    ratingCount: 0,
+    uses: 0,
+    tags: ["discount", "sale", "calculator", "shopping"],
+    featured: false
+  },
+  {
+    id: 49,
+    name: "JWT Decoder",
+    description: "Decode JSON Web Tokens to view header and payload",
+    icon: "🔑",
+    category: "Security",
+    rating: 0,
+    ratingCount: 0,
+    uses: 0,
+    tags: ["jwt", "token", "decode", "security"],
+    featured: true
+  },
+  {
+    id: 50,
+    name: "Text Diff Checker",
+    description: "Compare two texts and highlight differences",
+    icon: "↔️",
+    category: "Text Tools",
+    rating: 0,
+    ratingCount: 0,
+    uses: 0,
+    tags: ["diff", "compare", "text"],
+    featured: false
+  },
+  {
+    id: 51,
+    name: "Image Resizer",
+    description: "Resize images to specific dimensions and quality",
+    icon: "🖼️",
+    category: "Design",
+    rating: 0,
+    ratingCount: 0,
+    uses: 0,
+    tags: ["image", "resize", "photo"],
+    featured: true
+  },
+  {
+    id: 52,
+    name: "JSON <> CSV Converter",
+    description: "Convert data between JSON and CSV formats",
+    icon: "🔄",
+    category: "Converters",
+    rating: 0,
+    ratingCount: 0,
+    uses: 0,
+    tags: ["json", "csv", "converter", "data"],
+    featured: false
   }
 ];
 
 export const categories = [
-  "All", 
-  "Security", 
-  "Text Tools", 
-  "Converters", 
-  "Math Tools", 
-  "Calculators", 
-  "Design", 
-  "Formatters", 
-  "SEO Tools", 
-  "Generators", 
+  "All",
+  "Security",
+  "Text Tools",
+  "Converters",
+  "Math Tools",
+  "Calculators",
+  "Design",
+  "Formatters",
+  "SEO Tools",
+  "Generators",
   "Utilities"
 ];
 

@@ -50,7 +50,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus, Pencil, Trash2, X, Save, Clock, FileText, CheckCircle, AlertTriangle } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Plus, Pencil, Trash2, X, Save, Clock, FileText, CheckCircle, AlertTriangle, Bold, Italic, Link as LinkIcon, Image as ImageIcon, List, Heading1, Heading2 } from "lucide-react";
 
 interface SystemLog {
   id: string;
@@ -87,7 +94,11 @@ const Admin = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [enabledTools, setEnabledTools] = useState<Record<number, boolean>>(() => {
     const saved = localStorage.getItem("enabledTools");
-    return saved ? JSON.parse(saved) : tools.reduce((acc, tool) => ({ ...acc, [tool.id]: true }), {});
+    const savedState = saved ? JSON.parse(saved) : {};
+    // Create default state with all tools enabled
+    const defaultState = tools.reduce((acc, tool) => ({ ...acc, [tool.id]: true }), {});
+    // Merge saved state on top of default state to preserve user choices while adding new tools
+    return { ...defaultState, ...savedState };
   });
 
   // Tool editing state
@@ -204,6 +215,7 @@ const Admin = () => {
     e.preventDefault();
     const formData = {
       ...editingPost,
+      date: editingPost.publishDate || editingPost.date || new Date().toISOString().split('T')[0],
       tags: typeof editingPost.tags === 'string' ? editingPost.tags.split(',').map((t: string) => t.trim()) : editingPost.tags
     };
 
@@ -228,9 +240,54 @@ const Admin = () => {
       coverImage: "",
       author: branding.siteName + " Team",
       tags: [],
-      published: false
+      published: false,
+      publishDate: new Date().toISOString().split('T')[0],
+      seoTitle: "",
+      seoDescription: ""
     });
     setIsBlogDialogOpen(true);
+  };
+
+  const insertMarkdown = (syntax: string) => {
+    const textarea = document.getElementById('post-content') as HTMLTextAreaElement;
+    if (!textarea || !editingPost) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = editingPost.content;
+    const before = text.substring(0, start);
+    const selection = text.substring(start, end);
+    const after = text.substring(end);
+
+    let newText = "";
+
+    switch (syntax) {
+      case 'bold':
+        newText = `${before}**${selection || 'text'}**${after}`;
+        break;
+      case 'italic':
+        newText = `${before}_${selection || 'text'}_${after}`;
+        break;
+      case 'h1':
+        newText = `${before}# ${selection || 'Heading'}${after}`;
+        break;
+      case 'h2':
+        newText = `${before}## ${selection || 'Heading'}${after}`;
+        break;
+      case 'link':
+        newText = `${before}[${selection || 'link text'}](url)${after}`;
+        break;
+      case 'image':
+        newText = `${before}![${selection || 'alt text'}](image-url)${after}`;
+        break;
+      case 'list':
+        newText = `${before}- ${selection || 'item'}${after}`;
+        break;
+      default:
+        return;
+    }
+
+    setEditingPost({ ...editingPost, content: newText });
   };
 
   useEffect(() => {
@@ -463,7 +520,7 @@ const Admin = () => {
                     {paginatedTools.map((tool) => (
                       <div
                         key={tool.id}
-                        className={`flex items-center justify-between p-4 border rounded-lg transition-all ${enabledTools[tool.id] ? 'bg-white' : 'bg-gray-50 opacity-60'
+                        className={`flex items-center justify-between p-4 border rounded-lg transition-all ${enabledTools[tool.id] !== false ? 'bg-white' : 'bg-gray-50 opacity-60'
                           }`}
                       >
                         <div className="flex items-center gap-4 flex-1">
@@ -471,7 +528,7 @@ const Admin = () => {
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
                               <h4 className="font-semibold">{tool.name}</h4>
-                              {!enabledTools[tool.id] && (
+                              {enabledTools[tool.id] === false && (
                                 <Badge variant="secondary" className="text-xs">Disabled</Badge>
                               )}
                             </div>
@@ -1438,7 +1495,7 @@ const Admin = () => {
 
         {/* Tool Edit Dialog */}
         <Dialog open={isToolDialogOpen} onOpenChange={setIsToolDialogOpen}>
-          <DialogContent className="sm:max-w-[500px]">
+          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Edit Tool</DialogTitle>
               <DialogDescription>
@@ -1447,14 +1504,25 @@ const Admin = () => {
             </DialogHeader>
             {editingTool && (
               <form onSubmit={handleSaveTool} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="tool-name">Name</Label>
-                  <Input
-                    id="tool-name"
-                    value={editingTool.name}
-                    onChange={(e) => setEditingTool({ ...editingTool, name: e.target.value })}
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="tool-name">Name</Label>
+                    <Input
+                      id="tool-name"
+                      value={editingTool.name}
+                      onChange={(e) => setEditingTool({ ...editingTool, name: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="tool-icon">Icon (Emoji)</Label>
+                    <Input
+                      id="tool-icon"
+                      value={editingTool.icon}
+                      onChange={(e) => setEditingTool({ ...editingTool, icon: e.target.value })}
+                    />
+                  </div>
                 </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="tool-description">Description</Label>
                   <Textarea
@@ -1463,14 +1531,54 @@ const Admin = () => {
                     onChange={(e) => setEditingTool({ ...editingTool, description: e.target.value })}
                   />
                 </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="tool-category">Category</Label>
+                    <Input
+                      id="tool-category"
+                      value={editingTool.category}
+                      onChange={(e) => setEditingTool({ ...editingTool, category: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="tool-status">Status</Label>
+                    <Select
+                      value={editingTool.status || "Stable"}
+                      onValueChange={(value) => setEditingTool({ ...editingTool, status: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Stable">Stable</SelectItem>
+                        <SelectItem value="Beta">Beta</SelectItem>
+                        <SelectItem value="New">New</SelectItem>
+                        <SelectItem value="Deprecated">Deprecated</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="tool-category">Category</Label>
+                  <Label htmlFor="tool-tags">Tags (comma separated)</Label>
                   <Input
-                    id="tool-category"
-                    value={editingTool.category}
-                    onChange={(e) => setEditingTool({ ...editingTool, category: e.target.value })}
+                    id="tool-tags"
+                    value={Array.isArray(editingTool.tags) ? editingTool.tags.join(', ') : editingTool.tags}
+                    onChange={(e) => setEditingTool({ ...editingTool, tags: e.target.value.split(',').map((t: string) => t.trim()) })}
                   />
                 </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="tool-path">Custom Path (Optional)</Label>
+                  <Input
+                    id="tool-path"
+                    value={editingTool.path || ""}
+                    onChange={(e) => setEditingTool({ ...editingTool, path: e.target.value })}
+                    placeholder="/tools/category/tool-name"
+                  />
+                </div>
+
                 <div className="flex items-center justify-between p-2 border rounded">
                   <Label htmlFor="tool-featured">Featured Tool</Label>
                   <Switch
@@ -1531,11 +1639,34 @@ const Admin = () => {
 
                 <div className="space-y-2">
                   <Label htmlFor="post-content">Content (Markdown supported)</Label>
+                  <div className="flex items-center gap-1 p-1 border rounded-t-md bg-gray-50">
+                    <Button type="button" variant="ghost" size="sm" onClick={() => insertMarkdown('bold')} title="Bold">
+                      <Bold className="w-4 h-4" />
+                    </Button>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => insertMarkdown('italic')} title="Italic">
+                      <Italic className="w-4 h-4" />
+                    </Button>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => insertMarkdown('h1')} title="Heading 1">
+                      <Heading1 className="w-4 h-4" />
+                    </Button>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => insertMarkdown('h2')} title="Heading 2">
+                      <Heading2 className="w-4 h-4" />
+                    </Button>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => insertMarkdown('list')} title="List">
+                      <List className="w-4 h-4" />
+                    </Button>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => insertMarkdown('link')} title="Link">
+                      <LinkIcon className="w-4 h-4" />
+                    </Button>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => insertMarkdown('image')} title="Image">
+                      <ImageIcon className="w-4 h-4" />
+                    </Button>
+                  </div>
                   <Textarea
                     id="post-content"
                     value={editingPost.content}
                     onChange={(e) => setEditingPost({ ...editingPost, content: e.target.value })}
-                    className="min-h-[300px] font-mono"
+                    className="min-h-[300px] font-mono rounded-t-none border-t-0"
                   />
                 </div>
 
@@ -1565,6 +1696,41 @@ const Admin = () => {
                     value={Array.isArray(editingPost.tags) ? editingPost.tags.join(', ') : editingPost.tags}
                     onChange={(e) => setEditingPost({ ...editingPost, tags: e.target.value })}
                   />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="post-date">Publish Date</Label>
+                    <Input
+                      id="post-date"
+                      type="date"
+                      value={editingPost.publishDate || new Date().toISOString().split('T')[0]}
+                      onChange={(e) => setEditingPost({ ...editingPost, publishDate: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-4 pt-4 border-t">
+                  <h4 className="font-medium">SEO Settings</h4>
+                  <div className="space-y-2">
+                    <Label htmlFor="post-seo-title">SEO Title</Label>
+                    <Input
+                      id="post-seo-title"
+                      value={editingPost.seoTitle || ""}
+                      onChange={(e) => setEditingPost({ ...editingPost, seoTitle: e.target.value })}
+                      placeholder="Title for search engines (optional)"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="post-seo-desc">SEO Description</Label>
+                    <Textarea
+                      id="post-seo-desc"
+                      value={editingPost.seoDescription || ""}
+                      onChange={(e) => setEditingPost({ ...editingPost, seoDescription: e.target.value })}
+                      placeholder="Description for search engines (optional)"
+                      rows={2}
+                    />
+                  </div>
                 </div>
 
                 <div className="flex items-center justify-between p-4 border rounded-lg bg-gray-50">

@@ -6,7 +6,7 @@ import Footer from "@/components/zentryx/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Search, Calendar, User, Tag } from "lucide-react";
+import { Search, Calendar, User, Tag, Star, ArrowRight } from "lucide-react";
 
 const Blog = () => {
     const { blogPosts } = useBlog();
@@ -27,129 +27,204 @@ const Blog = () => {
         return matchesSearch && matchesTag;
     });
 
+    // Get popular posts (random for now, or based on some metric if available)
+    const popularPosts = publishedPosts.slice(0, 3);
+
     return (
         <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
             <Header />
 
             {/* Hero Section */}
-            <header className="relative pt-20 pb-16 px-4 overflow-hidden">
-                <div className="absolute inset-0">
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-100 via-purple-50 to-pink-50 opacity-60"></div>
-                    <div className="absolute top-20 left-20 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-                    <div className="absolute top-40 right-20 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-                    <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-pink-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+            <header className="relative pt-20 pb-12 px-4 overflow-hidden bg-white/50 backdrop-blur-sm border-b border-white/20">
+                <div className="absolute inset-0 -z-10">
+                    <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-100/50 to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 w-1/2 h-full bg-gradient-to-r from-purple-100/50 to-transparent"></div>
                 </div>
-                <div className="max-w-7xl mx-auto text-center relative z-10">
-                    <div className="animate-fade-in">
-                        <Badge className="mb-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0 px-6 py-2 text-sm shadow-lg" role="status">
-                            <Calendar className="w-4 h-4 inline mr-2" />
-                            <span>Latest Updates</span>
-                        </Badge>
-                        <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight tracking-tight">
-                            <span className="text-gray-900">Our </span>
-                            <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                                Blog & Insights
-                            </span>
-                        </h1>
-                        <p className="text-xl text-gray-700 leading-relaxed max-w-2xl mx-auto">
-                            Discover tutorials, tech news, and updates about our latest tools and features.
-                        </p>
-                    </div>
+                <div className="max-w-7xl mx-auto text-center">
+                    <Badge className="mb-4 bg-blue-100 text-blue-700 hover:bg-blue-200 border-0 px-4 py-1.5 text-sm font-medium transition-colors">
+                        <Calendar className="w-4 h-4 inline mr-2" />
+                        Latest Updates & Insights
+                    </Badge>
+                    <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#3A7AFE] via-[#9333EA] to-[#F59E0B] bg-clip-text text-transparent tracking-tight">
+                        Our Blog
+                    </h1>
+                    <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                        Discover tutorials, tech news, and updates about our latest tools and features.
+                    </p>
                 </div>
             </header>
 
-            <main className="flex-1 max-w-7xl mx-auto w-full px-4 pb-20">
+            <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-12">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-                {/* Search and Filter */}
-                <div className="max-w-3xl mx-auto mb-16 space-y-8">
-                    <div className="relative group">
-                        <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-all duration-500" aria-hidden="true"></div>
-                        <div className="relative bg-white rounded-2xl shadow-xl p-1.5">
-                            <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 z-10" aria-hidden="true" />
-                            <Input
-                                type="text"
-                                placeholder="Search articles, tutorials, and guides..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-14 pr-6 py-6 text-lg rounded-xl border-0 focus:ring-4 focus:ring-blue-300 bg-white relative w-full h-auto"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Tags Filter */}
-                    <div className="flex flex-wrap gap-3 justify-center">
-                        <Badge
-                            variant={selectedTag === null ? "default" : "outline"}
-                            className={`cursor-pointer px-4 py-2 text-sm transition-all duration-300 ${selectedTag === null ? 'bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-lg scale-105' : 'bg-white hover:bg-gray-50 hover:border-blue-300'}`}
-                            onClick={() => setSelectedTag(null)}
-                        >
-                            All Posts
-                        </Badge>
-                        {allTags.map(tag => (
-                            <Badge
-                                key={tag}
-                                variant={selectedTag === tag ? "default" : "outline"}
-                                className={`cursor-pointer px-4 py-2 text-sm transition-all duration-300 ${selectedTag === tag ? 'bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-lg scale-105' : 'bg-white hover:bg-gray-50 hover:border-blue-300'}`}
-                                onClick={() => setSelectedTag(tag)}
-                            >
-                                {tag}
-                            </Badge>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Blog Posts Grid */}
-                {filteredPosts.length === 0 ? (
-                    <div className="text-center py-12">
-                        <p className="text-gray-500 text-lg">No posts found matching your criteria.</p>
-                    </div>
-                ) : (
-                    <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
-                        {filteredPosts.map((post) => (
-                            <Link key={post.id} to={`/blog/${post.slug}`}>
-                                <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 h-full flex flex-col">
-                                    <div className="h-48 w-full bg-gray-100 relative overflow-hidden">
-                                        <img
-                                            src={post.coverImage}
-                                            alt={post.title}
-                                            className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
-                                            onError={(e) => {
-                                                (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1557683316-973673baf926?w=800&q=80";
-                                            }}
-                                        />
-                                    </div>
-                                    <CardHeader className="pb-2">
-                                        <CardTitle className="line-clamp-2 text-lg hover:text-blue-600 transition-colors">
-                                            {post.title}
-                                        </CardTitle>
-                                        <CardDescription className="line-clamp-2">
-                                            {post.excerpt}
-                                        </CardDescription>
-                                    </CardHeader>
-                                    <CardContent className="flex-1 flex flex-col justify-between">
-                                        <div className="flex flex-wrap gap-1 mb-4">
-                                            {post.tags.slice(0, 3).map((tag, index) => (
-                                                <Badge key={index} variant="secondary" className="text-xs">
-                                                    {tag}
-                                                </Badge>
-                                            ))}
-                                        </div>
-                                        <div className="flex items-center justify-between text-xs text-gray-500 pt-4 border-t">
-                                            <div className="flex items-center gap-1">
-                                                <User className="w-3 h-3" />
-                                                {post.author}
+                    {/* Main Content */}
+                    <div className="lg:col-span-8">
+                        {filteredPosts.length === 0 ? (
+                            <div className="text-center py-12 bg-white/50 rounded-2xl border border-dashed border-gray-300">
+                                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <Search className="w-8 h-8 text-gray-400" />
+                                </div>
+                                <h3 className="text-lg font-medium text-gray-900">No posts found</h3>
+                                <p className="text-gray-500 mt-1">Try adjusting your search or filters.</p>
+                                <button
+                                    onClick={() => { setSearchQuery(""); setSelectedTag(null); }}
+                                    className="mt-4 text-blue-600 hover:underline font-medium"
+                                >
+                                    Clear all filters
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="grid gap-6 md:grid-cols-2">
+                                {filteredPosts.map((post) => (
+                                    <Link key={post.id} to={`/blog/${post.slug}`} className="h-full">
+                                        <Card className="border-0 shadow-md bg-white/90 backdrop-blur-sm overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-full flex flex-col group">
+                                            <div className="h-48 w-full bg-gray-100 relative overflow-hidden">
+                                                <div className="absolute top-3 left-3 z-10">
+                                                    <Badge className="bg-white/90 text-gray-900 hover:bg-white backdrop-blur-sm shadow-sm">
+                                                        {post.tags[0]}
+                                                    </Badge>
+                                                </div>
+                                                <img
+                                                    src={post.coverImage}
+                                                    alt={post.title}
+                                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                    onError={(e) => {
+                                                        (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1557683316-973673baf926?w=800&q=80";
+                                                    }}
+                                                />
                                             </div>
-                                            <div className="flex items-center gap-1">
-                                                <Calendar className="w-3 h-3" />
+                                            <CardContent className="flex-1 p-5 flex flex-col">
+                                                <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
+                                                    <span className="flex items-center gap-1">
+                                                        <Calendar className="w-3 h-3" />
+                                                        {new Date(post.date).toLocaleDateString()}
+                                                    </span>
+                                                    <span>•</span>
+                                                    <span className="flex items-center gap-1">
+                                                        <User className="w-3 h-3" />
+                                                        {post.author}
+                                                    </span>
+                                                </div>
+                                                <h3 className="font-bold text-xl mb-2 text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2">
+                                                    {post.title}
+                                                </h3>
+                                                <p className="text-gray-600 text-sm line-clamp-3 mb-4 flex-1">
+                                                    {post.excerpt}
+                                                </p>
+                                                <div className="flex items-center text-blue-600 font-medium text-sm group-hover:translate-x-1 transition-transform">
+                                                    Read Article <ArrowRight className="w-4 h-4 ml-1" />
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    </Link>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Sidebar */}
+                    <aside className="lg:col-span-4 space-y-8">
+                        {/* Search Widget */}
+                        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm overflow-hidden">
+                            <CardHeader className="pb-3 border-b border-gray-100">
+                                <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                                    <Search className="w-5 h-5 text-blue-500" />
+                                    Search
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="pt-4">
+                                <div className="relative">
+                                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                    <Input
+                                        type="text"
+                                        placeholder="Search articles..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="pl-9 bg-gray-50 border-gray-200 focus:bg-white transition-colors"
+                                    />
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {/* Categories/Tags Widget */}
+                        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm overflow-hidden">
+                            <CardHeader className="pb-3 border-b border-gray-100">
+                                <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                                    <Tag className="w-5 h-5 text-purple-500" />
+                                    Topics
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="pt-4">
+                                <div className="flex flex-wrap gap-2">
+                                    <Badge
+                                        variant={selectedTag === null ? "default" : "outline"}
+                                        className={`cursor-pointer px-3 py-1.5 text-sm transition-all ${selectedTag === null ? 'bg-gray-900 hover:bg-gray-800' : 'hover:bg-gray-100'}`}
+                                        onClick={() => setSelectedTag(null)}
+                                    >
+                                        All
+                                    </Badge>
+                                    {allTags.map(tag => (
+                                        <Badge
+                                            key={tag}
+                                            variant={selectedTag === tag ? "default" : "outline"}
+                                            className={`cursor-pointer px-3 py-1.5 text-sm transition-all ${selectedTag === tag ? 'bg-blue-600 hover:bg-blue-700' : 'hover:bg-gray-100'}`}
+                                            onClick={() => setSelectedTag(tag)}
+                                        >
+                                            {tag}
+                                        </Badge>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {/* Popular Posts Widget */}
+                        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm overflow-hidden">
+                            <CardHeader className="pb-3 border-b border-gray-100">
+                                <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                                    <Star className="w-5 h-5 text-yellow-500" />
+                                    Popular Posts
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="pt-4 space-y-4">
+                                {popularPosts.map(post => (
+                                    <Link key={post.id} to={`/blog/${post.slug}`} className="flex gap-3 group">
+                                        <div className="w-20 h-16 rounded-md overflow-hidden shrink-0 bg-gray-100">
+                                            <img
+                                                src={post.coverImage}
+                                                alt={post.title}
+                                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                                                onError={(e) => {
+                                                    (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1557683316-973673baf926?w=800&q=80";
+                                                }}
+                                            />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2">
+                                                {post.title}
+                                            </h4>
+                                            <p className="text-xs text-gray-500 mt-1">
                                                 {new Date(post.date).toLocaleDateString()}
-                                            </div>
+                                            </p>
                                         </div>
-                                    </CardContent>
-                                </Card>
-                            </Link>
-                        ))}
-                    </div>
-                )}
+                                    </Link>
+                                ))}
+                            </CardContent>
+                        </Card>
+
+                        {/* Newsletter/Ad Widget Placeholder */}
+                        <div className="rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 p-6 text-white text-center shadow-lg">
+                            <h3 className="font-bold text-xl mb-2">Stay Updated</h3>
+                            <p className="text-blue-100 text-sm mb-4">Get the latest tools and updates delivered to your inbox.</p>
+                            <Input
+                                placeholder="Enter your email"
+                                className="bg-white/20 border-white/30 text-white placeholder:text-blue-100 mb-3 focus:bg-white/30"
+                            />
+                            <button className="w-full bg-white text-blue-600 font-semibold py-2 rounded-md hover:bg-blue-50 transition-colors text-sm">
+                                Subscribe
+                            </button>
+                        </div>
+                    </aside>
+                </div>
             </main>
 
             <Footer />

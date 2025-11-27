@@ -26,7 +26,20 @@ const Tools = () => {
     }
   }, [searchParams]);
 
-  const filteredTools = tools.filter((t) => {
+  const [toolOverrides, setToolOverrides] = useState<Record<number, any>>({});
+
+  useEffect(() => {
+    const saved = localStorage.getItem("toolOverrides");
+    if (saved) {
+      setToolOverrides(JSON.parse(saved));
+    }
+  }, []);
+
+  const mergedTools = tools.map(tool =>
+    toolOverrides[tool.id] ? { ...tool, ...toolOverrides[tool.id] } : tool
+  );
+
+  const filteredTools = mergedTools.filter((t) => {
     const matchesSearch =
       t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       t.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -95,8 +108,8 @@ const Tools = () => {
                   key={category}
                   onClick={() => setSelectedCategory(category)}
                   className={`px-6 py-3 rounded-xl font-semibold transition-all transform hover:scale-105 ${isActive
-                      ? `bg-gradient-to-r ${gradients[index % gradients.length]} text-white shadow-lg`
-                      : "bg-white text-gray-700 border-2 border-gray-200 hover:border-blue-400"
+                    ? `bg-gradient-to-r ${gradients[index % gradients.length]} text-white shadow-lg`
+                    : "bg-white text-gray-700 border-2 border-gray-200 hover:border-blue-400"
                     }`}
                 >
                   {category}
@@ -131,10 +144,10 @@ const Tools = () => {
 
         {/* Tools Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredTools.map((tool) => {
+          {filteredTools.map((tool: any) => {
             const categorySlug = generateSlug(tool.category);
             const toolSlug = generateSlug(tool.name);
-            const toolHref = `/tools/${categorySlug}/${toolSlug}`;
+            const toolHref = tool.path || `/tools/${categorySlug}/${toolSlug}`;
 
             return (
               <ToolCard
@@ -143,7 +156,11 @@ const Tools = () => {
                 description={tool.description}
                 icon={tool.icon}
                 category={tool.category}
-                badge={tool.featured ? "trending" : undefined}
+                badge={
+                  tool.status && ['new', 'beta', 'deprecated'].includes(tool.status.toLowerCase())
+                    ? tool.status.toLowerCase()
+                    : (tool.featured ? "trending" : undefined)
+                }
                 featured={tool.featured}
                 href={toolHref}
               />

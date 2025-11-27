@@ -9,7 +9,7 @@ export interface ToolCardProps {
     description?: string;
     icon: string;
     category: string;
-    badge?: 'new' | 'updated' | 'trending' | null;
+    badge?: 'new' | 'updated' | 'trending' | 'beta' | 'deprecated' | null;
     href: string;
     featured?: boolean;
     className?: string;
@@ -29,6 +29,8 @@ const ToolCard: React.FC<ToolCardProps> = ({
         new: 'badge-new',
         updated: 'badge-updated',
         trending: 'badge-trending',
+        beta: 'bg-orange-100 text-orange-800 px-2 py-1 rounded-full',
+        deprecated: 'bg-red-100 text-red-800 px-2 py-1 rounded-full',
     };
 
     return (

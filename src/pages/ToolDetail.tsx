@@ -58,6 +58,13 @@ import MetaTagGenerator from "@/components/tools/MetaTagGenerator";
 import OpenGraphPreview from "@/components/tools/OpenGraphPreview";
 import RobotsTxtGenerator from "@/components/tools/RobotsTxtGenerator";
 import TimerStopwatch from "@/components/tools/TimerStopwatch";
+import UnixTimestampConverter from "@/components/tools/UnixTimestampConverter";
+import AspectRatioCalculator from "@/components/tools/AspectRatioCalculator";
+import DiscountCalculator from "@/components/tools/DiscountCalculator";
+import JWTDecoder from "@/components/tools/JWTDecoder";
+import TextDiffChecker from "@/components/tools/TextDiffChecker";
+import ImageResizer from "@/components/tools/ImageResizer";
+import JsonCsvConverter from "@/components/tools/JsonCsvConverter";
 
 // Map tool IDs to their components
 const toolComponents: Record<number, React.ComponentType> = {
@@ -104,7 +111,15 @@ const toolComponents: Record<number, React.ComponentType> = {
   41: () => <RobotsTxtGenerator />,
   42: () => <QRCodeGenerator />,
   43: () => <UUIDGenerator />,
-  44: () => <TimerStopwatch />
+  44: () => <TimerStopwatch />,
+  45: () => <MarkdownToHTML />,
+  46: () => <UnixTimestampConverter />,
+  47: () => <AspectRatioCalculator />,
+  48: () => <DiscountCalculator />,
+  49: () => <JWTDecoder />,
+  50: () => <TextDiffChecker />,
+  51: () => <ImageResizer />,
+  52: () => <JsonCsvConverter />
 };
 
 const relatedTools = [
@@ -118,8 +133,20 @@ const ToolDetail = () => {
   const { toast } = useToast();
   const { rateTool, getToolRating } = useRating();
 
+  const [toolOverrides, setToolOverrides] = useState<Record<number, any>>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem("toolOverrides");
+      return saved ? JSON.parse(saved) : {};
+    }
+    return {};
+  });
+
+  const mergedTools = tools.map(tool =>
+    toolOverrides[tool.id] ? { ...tool, ...toolOverrides[tool.id] } : tool
+  );
+
   // Find tool by matching slugified category and name
-  const tool = tools.find(t =>
+  const tool = mergedTools.find(t =>
     slugify(t.category) === category &&
     slugify(t.name) === toolName
   );
@@ -170,7 +197,7 @@ const ToolDetail = () => {
 
   // Get tools organized by category
   const toolsByCategory = categories.slice(1).map(category => {
-    const categoryTools = tools.filter(tool => tool.category === category);
+    const categoryTools = mergedTools.filter(tool => tool.category === category);
     return {
       name: category,
       tools: categoryTools,
@@ -312,7 +339,7 @@ const ToolDetail = () => {
                         {category.tools.slice(0, 5).map((categoryTool) => (
                           <Link
                             key={categoryTool.id}
-                            to={getToolUrl(categoryTool.category, categoryTool.name)}
+                            to={(categoryTool as any).path || getToolUrl(categoryTool.category, categoryTool.name)}
                             className={`block p-2 rounded border transition-colors ${categoryTool.id === toolId
                               ? "bg-blue-50 border-blue-200"
                               : "border-gray-100 hover:bg-gray-50"

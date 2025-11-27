@@ -11,6 +11,9 @@ export interface BlogPost {
     date: string;
     tags: string[];
     published: boolean;
+    publishDate?: string;
+    seoTitle?: string;
+    seoDescription?: string;
 }
 
 interface BlogContextType {
@@ -445,7 +448,7 @@ export const BlogProvider = ({ children }: { children: ReactNode }) => {
         const newPost: BlogPost = {
             id: Date.now(),
             ...postData,
-            date: new Date().toISOString().split('T')[0],
+            date: postData.publishDate || new Date().toISOString().split('T')[0],
             published: false,
         };
         setBlogPosts(prev => [...prev, newPost]);
