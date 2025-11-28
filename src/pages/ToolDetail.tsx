@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Users, Share, Copy, Download, Heart, ExternalLink, ChevronDown, ChevronRight } from "lucide-react";
+import { ArrowLeft, Users, Share, Copy, Download, Heart, ExternalLink, ChevronDown, ChevronRight, Star, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Rating } from "@/components/ui/rating";
 import { useRating } from "@/hooks/useRating";
 import { useToast } from "@/hooks/use-toast";
-import { tools, categories } from "@/data/tools";
+import { useTools } from "@/contexts/ToolsContext";
+import { categories } from "@/data/tools";
 import Header from "@/components/zentryx/Header";
 import Footer from "@/components/zentryx/Footer";
 import { AdUnit } from "@/components/AdUnit";
@@ -65,6 +66,23 @@ import JWTDecoder from "@/components/tools/JWTDecoder";
 import TextDiffChecker from "@/components/tools/TextDiffChecker";
 import ImageResizer from "@/components/tools/ImageResizer";
 import JsonCsvConverter from "@/components/tools/JsonCsvConverter";
+import FakeDataGenerator from "@/components/tools/FakeDataGenerator";
+import TextToHandwriting from "@/components/tools/TextToHandwriting";
+import WheelSpinner from "@/components/tools/WheelSpinner";
+import CodeMinifier from "@/components/tools/CodeMinifier";
+import ImageFilters from "@/components/tools/ImageFilters";
+import ImageToSketch from "@/components/tools/ImageToSketch";
+import ImageWatermark from "@/components/tools/ImageWatermark";
+import ImageRoundedCorners from "@/components/tools/ImageRoundedCorners";
+import ImageCropResize from "@/components/tools/ImageCropResize";
+import PasswordStrengthTester from "@/components/tools/PasswordStrengthTester";
+import RegexTester from "@/components/tools/RegexTester";
+import ColorPaletteExtractor from "@/components/tools/ColorPaletteExtractor";
+import ColorShadesGenerator from "@/components/tools/ColorShadesGenerator";
+import CsvViewer from "@/components/tools/CsvViewer";
+import TextColumnSplitter from "@/components/tools/TextColumnSplitter";
+import NotesApp from "@/components/tools/NotesApp";
+import TodoApp from "@/components/tools/TodoApp";
 
 // Map tool IDs to their components
 const toolComponents: Record<number, React.ComponentType> = {
@@ -119,34 +137,34 @@ const toolComponents: Record<number, React.ComponentType> = {
   49: () => <JWTDecoder />,
   50: () => <TextDiffChecker />,
   51: () => <ImageResizer />,
-  52: () => <JsonCsvConverter />
+  52: () => <JsonCsvConverter />,
+  53: () => <FakeDataGenerator />,
+  54: () => <TextToHandwriting />,
+  55: () => <WheelSpinner />,
+  56: () => <CodeMinifier />,
+  57: () => <ImageFilters />,
+  58: () => <ImageToSketch />,
+  59: () => <ImageWatermark />,
+  60: () => <ImageRoundedCorners />,
+  61: () => <ImageCropResize />,
+  62: () => <PasswordStrengthTester />,
+  63: () => <RegexTester />,
+  64: () => <ColorPaletteExtractor />,
+  65: () => <ColorShadesGenerator />,
+  66: () => <CsvViewer />,
+  67: () => <TextColumnSplitter />,
+  68: () => <NotesApp />,
+  69: () => <TodoApp />
 };
-
-const relatedTools = [
-  { id: 2, name: "MD5 Hash Generator", icon: "🔒", category: "Security" },
-  { id: 22, name: "Random Number Generator", icon: "🎲", category: "Math Tools" },
-  { id: 43, name: "UUID Generator", icon: "🆔", category: "Generators" }
-];
 
 const ToolDetail = () => {
   const { category, toolName } = useParams<{ category: string; toolName: string }>();
   const { toast } = useToast();
   const { rateTool, getToolRating } = useRating();
-
-  const [toolOverrides, setToolOverrides] = useState<Record<number, any>>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem("toolOverrides");
-      return saved ? JSON.parse(saved) : {};
-    }
-    return {};
-  });
-
-  const mergedTools = tools.map(tool =>
-    toolOverrides[tool.id] ? { ...tool, ...toolOverrides[tool.id] } : tool
-  );
+  const { tools, loading } = useTools();
 
   // Find tool by matching slugified category and name
-  const tool = mergedTools.find(t =>
+  const tool = tools.find(t =>
     slugify(t.category) === category &&
     slugify(t.name) === toolName
   );
@@ -155,14 +173,24 @@ const ToolDetail = () => {
   const [isFavorited, setIsFavorited] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set([tool?.category || ""]));
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-slate-900 mb-4">Loading Tool...</h1>
+        </div>
+      </div>
+    );
+  }
+
   if (!tool) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Tool Not Found</h1>
-          <p className="text-gray-600 mb-8">The tool you're looking for doesn't exist or hasn't been implemented yet.</p>
+          <h1 className="text-4xl font-bold text-slate-900 mb-4">Tool Not Found</h1>
+          <p className="text-slate-600 mb-8">The tool you're looking for doesn't exist or hasn't been implemented yet.</p>
           <Link to="/tools">
-            <Button>Browse All Tools</Button>
+            <Button className="btn-primary">Browse All Tools</Button>
           </Link>
         </div>
       </div>
@@ -197,7 +225,7 @@ const ToolDetail = () => {
 
   // Get tools organized by category
   const toolsByCategory = categories.slice(1).map(category => {
-    const categoryTools = mergedTools.filter(tool => tool.category === category);
+    const categoryTools = tools.filter(tool => tool.category === category);
     return {
       name: category,
       tools: categoryTools,
@@ -209,68 +237,91 @@ const ToolDetail = () => {
   const ToolComponent = toolComponents[toolId];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
       <Header />
 
       {/* Header Ad */}
-      <div className="max-w-7xl mx-auto px-4 mt-4">
+      <div className="max-w-7xl mx-auto px-4 mt-20">
         <AdUnit slot="header" />
       </div>
-      <div className="bg-white/95 backdrop-blur-xl border-b border-gray-200/50 shadow-sm">
+
+      {/* Breadcrumb & Back */}
+      <div className="bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <Link to="/tools" className="inline-flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors group">
-            <ArrowLeft className="w-4 h-4 group-hover:translate-x-[-4px] transition-transform" />
-            <span>Back to Tools</span>
-          </Link>
+          <div className="flex items-center text-sm text-slate-500 mb-2">
+            <Link to="/" className="hover:text-[#3A7AFE] flex items-center">
+              <Home className="w-4 h-4 mr-1" /> Home
+            </Link>
+            <ChevronRight className="w-4 h-4 mx-2" />
+            <Link to="/tools" className="hover:text-[#3A7AFE]">Tools</Link>
+            <ChevronRight className="w-4 h-4 mx-2" />
+            <span className="text-slate-900 font-medium">{tool.name}</span>
+          </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+          {/* Main Content (8 cols) */}
+          <div className="lg:col-span-8">
             {/* Tool Header */}
-            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-8 mb-8 border border-gray-200">
-              <div className="flex items-start justify-between mb-6">
-                <div className="flex items-center space-x-4">
-                  <div className="text-4xl">{tool.icon}</div>
+            <div className="bg-white rounded-2xl p-8 mb-8 border border-slate-200 shadow-sm">
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+                <div className="flex items-start space-x-5">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center text-4xl shadow-inner border border-blue-100">
+                    {tool.icon}
+                  </div>
                   <div>
-                    <div className="flex items-center space-x-2 mb-2">
-                      <h1 className="text-2xl font-bold text-gray-900">{tool.name}</h1>
+                    <div className="flex flex-wrap items-center gap-3 mb-2">
+                      <h1 className="text-3xl font-bold text-slate-900">{tool.name}</h1>
                       {tool.featured && (
-                        <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white">
-                          Featured
+                        <Badge className="bg-gradient-to-r from-amber-400 to-orange-500 text-white border-0">
+                          <Star className="w-3 h-3 mr-1 fill-white" /> Featured
                         </Badge>
                       )}
                     </div>
-                    <div className="flex items-center space-x-4 text-sm text-gray-500 mb-3">
-                      <Rating
-                        value={getToolRating(tool.id).averageRating}
-                        count={getToolRating(tool.id).ratingCount}
-                        userRating={getToolRating(tool.id).userRating}
-                        onRate={(rating) => rateTool(tool.id, rating)}
-                        size="md"
-                      />
-                      <div className="flex items-center space-x-1">
-                        <Users className="w-4 h-4" />
+                    <p className="text-slate-600 text-lg mb-4 leading-relaxed">{tool.description}</p>
+
+                    <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500">
+                      <div className="flex items-center bg-slate-100 px-3 py-1 rounded-full">
+                        <Users className="w-4 h-4 mr-2 text-slate-400" />
                         <span>{tool.uses.toLocaleString()} uses</span>
                       </div>
-                      <Badge variant="secondary">{tool.category}</Badge>
+                      <div className="flex items-center bg-slate-100 px-3 py-1 rounded-full">
+                        <Badge variant="secondary" className="bg-transparent p-0 text-slate-600 hover:bg-transparent font-normal">
+                          {tool.category}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center">
+                        <Rating
+                          value={getToolRating(tool.id).averageRating}
+                          count={getToolRating(tool.id).ratingCount}
+                          userRating={getToolRating(tool.id).userRating}
+                          onRate={(rating) => rateTool(tool.id, rating)}
+                          size="sm"
+                        />
+                      </div>
                     </div>
-                    <p className="text-gray-600 text-base">{tool.description}</p>
                   </div>
                 </div>
-                <div className="flex space-x-2">
+
+                <div className="flex space-x-2 self-start">
                   <Button
                     variant="outline"
                     size="icon"
                     onClick={toggleFavorite}
-                    className={isFavorited ? "text-red-500" : ""}
+                    className={`rounded-xl border-2 ${isFavorited ? "border-red-200 bg-red-50 text-red-500" : "border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200"}`}
                   >
-                    <Heart className={`w-4 h-4 ${isFavorited ? "fill-current" : ""}`} />
+                    <Heart className={`w-5 h-5 ${isFavorited ? "fill-current" : ""}`} />
                   </Button>
-                  <Button variant="outline" size="icon" onClick={shareUrl}>
-                    <Share className="w-4 h-4" />
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={shareUrl}
+                    className="rounded-xl border-2 border-slate-200 text-slate-400 hover:text-[#3A7AFE] hover:border-[#3A7AFE]"
+                  >
+                    <Share className="w-5 h-5" />
                   </Button>
                 </div>
               </div>
@@ -280,85 +331,86 @@ const ToolDetail = () => {
             <AdUnit slot="toolPage" className="mb-8" />
 
             {/* Tool Interface */}
-            <ToolComponent />
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden min-h-[400px]">
+              {ToolComponent ? <ToolComponent /> : <div className="p-8 text-center text-slate-500">Tool component not found or implementation pending.</div>}
+            </div>
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
+          {/* Sidebar (4 cols) */}
+          <div className="lg:col-span-4 space-y-6">
             {/* Sidebar Ad */}
             <AdUnit slot="sidebar" />
+
             {/* Quick Actions */}
-            <Card className="border-0 bg-white/90 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-lg">Quick Actions</CardTitle>
+            <Card className="border border-slate-200 shadow-sm rounded-2xl overflow-hidden">
+              <CardHeader className="bg-slate-50 border-b border-slate-100 pb-4">
+                <CardTitle className="text-lg font-bold text-slate-900">Quick Actions</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start" onClick={shareUrl}>
-                  <Share className="w-4 h-4 mr-2" />
+              <CardContent className="p-4 space-y-3">
+                <Button variant="outline" className="w-full justify-start h-12 text-slate-600 hover:text-[#3A7AFE] hover:border-[#3A7AFE] hover:bg-blue-50 transition-all" onClick={shareUrl}>
+                  <Share className="w-4 h-4 mr-3" />
                   Share Tool
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <ExternalLink className="w-4 h-4 mr-2" />
+                <Button variant="outline" className="w-full justify-start h-12 text-slate-600 hover:text-[#3A7AFE] hover:border-[#3A7AFE] hover:bg-blue-50 transition-all">
+                  <ExternalLink className="w-4 h-4 mr-3" />
                   Open in New Tab
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <Download className="w-4 h-4 mr-2" />
+                <Button variant="outline" className="w-full justify-start h-12 text-slate-600 hover:text-[#3A7AFE] hover:border-[#3A7AFE] hover:bg-blue-50 transition-all">
+                  <Download className="w-4 h-4 mr-3" />
                   Export Results
                 </Button>
               </CardContent>
             </Card>
 
             {/* Tools by Category */}
-            <Card className="border-0 bg-white/90 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-lg">Browse Tools by Category</CardTitle>
-                <CardDescription>Discover more tools organized by category</CardDescription>
+            <Card className="border border-slate-200 shadow-sm rounded-2xl overflow-hidden">
+              <CardHeader className="bg-slate-50 border-b border-slate-100 pb-4">
+                <CardTitle className="text-lg font-bold text-slate-900">More Tools</CardTitle>
+                <CardDescription>Explore other tools in {tool.category}</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-2 max-h-96 overflow-y-auto">
+              <CardContent className="p-0 max-h-[500px] overflow-y-auto custom-scrollbar">
                 {toolsByCategory.map((category) => (
-                  <div key={category.name} className="border border-gray-200 rounded-lg">
+                  <div key={category.name} className="border-b border-slate-100 last:border-0">
                     <button
                       onClick={() => toggleCategory(category.name)}
-                      className="w-full flex items-center justify-between p-3 text-left hover:bg-gray-50 rounded-lg transition-colors"
+                      className="w-full flex items-center justify-between p-4 text-left hover:bg-slate-50 transition-colors"
                     >
-                      <div className="flex items-center space-x-2">
-                        <span className="font-medium text-gray-900">{category.name}</span>
-                        <Badge variant="secondary" className="text-xs">
+                      <div className="flex items-center space-x-3">
+                        <span className="font-semibold text-slate-700">{category.name}</span>
+                        <Badge variant="secondary" className="bg-slate-100 text-slate-500 text-xs font-normal">
                           {category.count}
                         </Badge>
                       </div>
                       {expandedCategories.has(category.name) ? (
-                        <ChevronDown className="w-4 h-4 text-gray-500" />
+                        <ChevronDown className="w-4 h-4 text-slate-400" />
                       ) : (
-                        <ChevronRight className="w-4 h-4 text-gray-500" />
+                        <ChevronRight className="w-4 h-4 text-slate-400" />
                       )}
                     </button>
 
                     {expandedCategories.has(category.name) && (
-                      <div className="px-3 pb-3 space-y-2">
+                      <div className="px-4 pb-4 space-y-2 bg-slate-50/50">
                         {category.tools.slice(0, 5).map((categoryTool) => (
                           <Link
                             key={categoryTool.id}
                             to={(categoryTool as any).path || getToolUrl(categoryTool.category, categoryTool.name)}
-                            className={`block p-2 rounded border transition-colors ${categoryTool.id === toolId
-                              ? "bg-blue-50 border-blue-200"
-                              : "border-gray-100 hover:bg-gray-50"
+                            className={`block p-3 rounded-xl border transition-all ${categoryTool.id === toolId
+                              ? "bg-white border-[#3A7AFE] shadow-sm ring-1 ring-[#3A7AFE]/20"
+                              : "bg-white border-slate-200 hover:border-[#3A7AFE] hover:shadow-sm"
                               }`}
                           >
-                            <div className="flex items-center space-x-2">
-                              <span className="text-lg">{categoryTool.icon}</span>
+                            <div className="flex items-center space-x-3">
+                              <span className="text-xl">{categoryTool.icon}</span>
                               <div className="flex-1 min-w-0">
-                                <p className={`text-sm font-medium truncate ${categoryTool.id === toolId ? "text-blue-700" : "text-gray-900"
+                                <p className={`text-sm font-semibold truncate ${categoryTool.id === toolId ? "text-[#3A7AFE]" : "text-slate-700"
                                   }`}>
                                   {categoryTool.name}
                                 </p>
-                                <div className="flex items-center space-x-2 text-xs text-gray-500">
-                                  <Rating
-                                    value={getToolRating(categoryTool.id).averageRating}
-                                    count={getToolRating(categoryTool.id).ratingCount}
-                                    readonly
-                                    size="sm"
-                                  />
+                                <div className="flex items-center mt-1">
+                                  <Star className="w-3 h-3 text-amber-400 fill-amber-400 mr-1" />
+                                  <span className="text-xs text-slate-500">
+                                    {getToolRating(categoryTool.id).averageRating.toFixed(1)}
+                                  </span>
                                 </div>
                               </div>
                             </div>
@@ -367,47 +419,15 @@ const ToolDetail = () => {
                         {category.tools.length > 5 && (
                           <Link
                             to={`/tools?category=${encodeURIComponent(category.name)}`}
-                            className="block p-2 text-center text-sm text-blue-600 hover:text-blue-800"
+                            className="block py-2 text-center text-sm font-medium text-[#3A7AFE] hover:text-[#1D4ED8] hover:underline"
                           >
-                            View all {category.tools.length} {category.name} tools →
+                            View all {category.tools.length} tools
                           </Link>
                         )}
                       </div>
                     )}
                   </div>
                 ))}
-              </CardContent>
-            </Card>
-
-            {/* Tool Stats */}
-            <Card className="border-0 bg-gradient-to-r from-blue-50 to-purple-50">
-              <CardHeader>
-                <CardTitle className="text-lg">Tool Statistics</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Total Uses</span>
-                  <span className="font-semibold">{tool.uses.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Rating</span>
-                  <div className="flex flex-col items-end">
-                    <Rating
-                      value={getToolRating(tool.id).averageRating}
-                      count={getToolRating(tool.id).ratingCount}
-                      readonly
-                      size="sm"
-                    />
-                  </div>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Category</span>
-                  <span className="font-semibold">{tool.category}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Updated</span>
-                  <span className="font-semibold">Today</span>
-                </div>
               </CardContent>
             </Card>
           </div>

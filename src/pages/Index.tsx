@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Wrench, Image, Calculator, RefreshCw, Shield, Code, Palette, Zap, Star, TrendingUp, Sparkles, ArrowRight, Check } from "lucide-react";
+import { Wrench, Image, Calculator, RefreshCw, Shield, Code, Palette, Zap, Star, TrendingUp, Sparkles, ArrowRight, Check, Search } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Header from "@/components/zentryx/Header";
@@ -30,42 +31,42 @@ const toolCategories = [
         name: "Calculator Tools",
         icon: Calculator,
         count: 10,
-        gradient: "from-indigo-500 to-blue-500",
+        gradient: "from-green-500 to-emerald-500",
         description: "Quick calculations"
     },
     {
         name: "Converter Tools",
         icon: RefreshCw,
         count: 9,
-        gradient: "from-pink-500 to-rose-500",
+        gradient: "from-orange-500 to-red-500",
         description: "Convert between formats"
     },
     {
         name: "Security Tools",
         icon: Shield,
         count: 6,
-        gradient: "from-violet-500 to-purple-500",
+        gradient: "from-indigo-500 to-blue-500",
         description: "Passwords and encryption"
     },
     {
         name: "Developer Tools",
         icon: Wrench,
         count: 7,
-        gradient: "from-cyan-500 to-blue-500",
+        gradient: "from-yellow-500 to-orange-500",
         description: "Code utilities"
     },
     {
         name: "Design Tools",
         icon: Palette,
         count: 5,
-        gradient: "from-fuchsia-500 to-pink-500",
+        gradient: "from-pink-500 to-rose-500",
         description: "Colors and design"
     },
     {
         name: "Utility Tools",
         icon: Zap,
         count: 6,
-        gradient: "from-teal-500 to-emerald-500",
+        gradient: "from-teal-500 to-cyan-500",
         description: "Everyday utilities"
     },
 ];
@@ -87,12 +88,20 @@ const featuredTools = [
 ];
 
 const IndexZentryx = () => {
+    const [searchTerm, setSearchTerm] = useState("");
     const { branding } = useBranding();
     const { config: adsConfig } = useAds();
     const navigate = useNavigate();
 
+    const handleSearch = (value: string) => {
+        setSearchTerm(value);
+        if (value.trim()) {
+            navigate(`/tools?search=${encodeURIComponent(value.trim())}`);
+        }
+    };
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+        <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
             <Header />
 
             {/* Header Ad */}
@@ -103,51 +112,66 @@ const IndexZentryx = () => {
             )}
 
             {/* ========== HERO SECTION ========== */}
-            <section className="relative pt-24 pb-20 px-4 overflow-hidden">
-                {/* Animated Background */}
-                <div className="absolute inset-0 -z-10">
-                    <div className="absolute top-20 left-10 w-96 h-96 bg-blue-400/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
-                    <div className="absolute top-40 right-10 w-96 h-96 bg-purple-400/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
-                    <div className="absolute bottom-20 left-1/2 w-96 h-96 bg-pink-400/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
+            <section className="relative pt-32 pb-24 px-4 overflow-hidden">
+                {/* Animated Background Blobs */}
+                <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
+                    <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-400/20 rounded-full mix-blend-multiply filter blur-[80px] animate-blob"></div>
+                    <div className="absolute top-[10%] right-[-10%] w-[500px] h-[500px] bg-purple-400/20 rounded-full mix-blend-multiply filter blur-[80px] animate-blob animation-delay-2000"></div>
+                    <div className="absolute bottom-[-10%] left-[20%] w-[500px] h-[500px] bg-pink-400/20 rounded-full mix-blend-multiply filter blur-[80px] animate-blob animation-delay-4000"></div>
                 </div>
 
-                <div className="max-w-7xl mx-auto text-center relative">
+                <div className="max-w-5xl mx-auto text-center relative z-10">
                     <div className="animate-fade-in-up">
                         {/* Badge */}
-                        <Badge className="mb-6 bg-gradient-to-r from-[#3A7AFE] to-[#9333EA] text-white border-0 px-6 py-2.5 text-sm font-semibold shadow-lg hover:shadow-xl transition-shadow">
-                            <Sparkles className="w-4 h-4 inline mr-2" />
-                            New Tools Added Weekly
-                        </Badge>
+                        <div className="inline-flex items-center justify-center px-4 py-1.5 mb-8 rounded-full bg-white border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-default">
+                            <Sparkles className="w-4 h-4 text-[#3A7AFE] mr-2" />
+                            <span className="text-sm font-semibold text-slate-700">New Tools Added Weekly</span>
+                        </div>
 
                         {/* Main Heading */}
-                        <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 leading-tight">
-                            <span className="text-gray-900">40+ Free Online Tools.</span>
-                            <br />
-                            <span className="bg-gradient-to-r from-[#3A7AFE] via-[#9333EA] to-[#DB2777] bg-clip-text text-transparent">
-                                Fast. Simple. Trusted.
+                        <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold mb-8 leading-[1.1] tracking-tight text-slate-900">
+                            Smart Tools. <br className="hidden sm:block" />
+                            <span className="bg-gradient-to-r from-[#3A7AFE] via-[#9333EA] to-[#F59E0B] bg-clip-text text-transparent">
+                                Zero Effort.
                             </span>
                         </h1>
 
                         {/* Subheading */}
-                        <p className="text-xl sm:text-2xl text-gray-700 mb-4 max-w-4xl mx-auto leading-relaxed font-medium">
-                            Converters, Calculators, Generators & More — All in One Place.
-                        </p>
-                        <p className="text-base text-gray-600 mb-12 max-w-2xl mx-auto">
-                            No signup. No payment. No limits. Just results.
+                        <p className="text-xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed">
+                            Access 40+ free developer and productivity tools. No signup required. Fast, secure, and always free.
                         </p>
 
-
+                        {/* Search Bar */}
+                        <div className="max-w-2xl mx-auto mb-12 relative group">
+                            <div className="absolute -inset-1 bg-gradient-to-r from-[#3A7AFE] via-[#9333EA] to-[#F59E0B] rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                            <div className="relative bg-white rounded-2xl shadow-xl flex items-center p-2">
+                                <Search className="w-6 h-6 text-slate-400 ml-4" />
+                                <input
+                                    type="text"
+                                    placeholder="Search tools (e.g., Password Generator, PDF to JPG)..."
+                                    className="w-full p-4 text-lg bg-transparent border-none focus:ring-0 text-slate-900 placeholder:text-slate-400"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleSearch(searchTerm)}
+                                />
+                                <Button
+                                    onClick={() => handleSearch(searchTerm)}
+                                    className="hidden sm:flex bg-[#3A7AFE] hover:bg-[#1D4ED8] text-white px-8 py-6 rounded-xl font-bold text-lg transition-all"
+                                >
+                                    Search
+                                </Button>
+                            </div>
+                        </div>
 
                         {/* CTA Buttons */}
                         <div className="flex flex-col sm:flex-row justify-center gap-4">
                             <Link to="/tools">
-                                <Button className="btn-primary px-12 py-7 text-lg font-bold rounded-xl shadow-zentryx-lg">
-                                    Explore All Tools
-                                    <ArrowRight className="w-5 h-5 ml-2" />
+                                <Button className="btn-primary w-full sm:w-auto px-8 py-6 text-lg">
+                                    Browse All Tools
                                 </Button>
                             </Link>
                             <Link to="/tools?filter=trending">
-                                <Button variant="outline" className="px-12 py-7 text-lg font-bold rounded-xl border-2 border-[#3A7AFE] text-[#3A7AFE] hover:bg-[#3A7AFE] hover:text-white transition-all">
+                                <Button variant="outline" className="btn-secondary w-full sm:w-auto px-8 py-6 text-lg bg-white">
                                     <TrendingUp className="w-5 h-5 mr-2" />
                                     Top Tools
                                 </Button>
@@ -158,208 +182,170 @@ const IndexZentryx = () => {
             </section>
 
             {/* ========== TOOL CATEGORIES GRID ========== */}
-            <section className="py-16 px-4 bg-white/50 backdrop-blur-sm">
+            <section className="py-20 px-4 bg-white border-y border-slate-100">
                 <div className="max-w-7xl mx-auto">
-                    <div className="text-center mb-12">
-                        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                            Browse by Category
-                        </h2>
-                        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                            Find the perfect tool for your needs across our organized categories
-                        </p>
+                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+                        <div>
+                            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+                                Browse by Category
+                            </h2>
+                            <p className="text-lg text-slate-600 max-w-2xl">
+                                Find the perfect tool for your needs across our organized categories
+                            </p>
+                        </div>
+                        <Link to="/tools" className="text-[#3A7AFE] font-semibold hover:text-[#1D4ED8] flex items-center group">
+                            View all categories <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                        </Link>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {toolCategories.map((category, index) => (
                             <Link to={`/tools?category=${category.name.toLowerCase()}`} key={category.name}>
-                                <Card
-                                    className="card-zentryx hover-lift group cursor-pointer overflow-hidden"
-                                    style={{ animationDelay: `${index * 50}ms` }}
+                                <div
+                                    className="group bg-slate-50 hover:bg-white rounded-2xl p-6 border border-slate-200 hover:border-[#3A7AFE] transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer h-full"
                                 >
-                                    <div className="p-6">
-                                        <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${category.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                                            <category.icon className="w-8 h-8 text-white" />
-                                        </div>
-                                        <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#3A7AFE] transition-colors">
-                                            {category.name}
-                                        </h3>
-                                        <p className="text-sm text-gray-600 mb-3">{category.description}</p>
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-sm font-semibold text-gray-500">{category.count} tools</span>
-                                            <ArrowRight className="w-4 h-4 text-[#3A7AFE] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                                    <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${category.gradient} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
+                                        <category.icon className="w-7 h-7 text-white" />
+                                    </div>
+                                    <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-[#3A7AFE] transition-colors">
+                                        {category.name}
+                                    </h3>
+                                    <p className="text-sm text-slate-600 mb-4 line-clamp-2">{category.description}</p>
+                                    <div className="flex items-center justify-between mt-auto">
+                                        <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-200 text-slate-600 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
+                                            {category.count} tools
+                                        </span>
+                                        <div className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+                                            <ArrowRight className="w-4 h-4 text-[#3A7AFE]" />
                                         </div>
                                     </div>
-                                </Card>
+                                </div>
                             </Link>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* ========== FEATURED TOOLS (TOP 12) ========== */}
-            <section className="py-20 px-4 relative">
+            {/* ========== FEATURED TOOLS ========== */}
+            <section className="py-24 px-4 bg-slate-50">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-16">
-                        <Badge className="mb-6 bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-0 px-6 py-2 text-sm font-bold shadow-lg">
-                            <Star className="w-4 h-4 inline mr-2 fill-white" />
+                        <div className="inline-flex items-center justify-center px-4 py-1.5 mb-6 rounded-full bg-orange-100 text-orange-700 border border-orange-200 font-bold text-sm">
+                            <Star className="w-4 h-4 mr-2 fill-current" />
                             Most Popular
-                        </Badge>
-                        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                        </div>
+                        <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
                             Featured Tools
                         </h2>
-                        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                            Our most-used tools, trusted by thousands of professionals worldwide
+                        <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                            Our most-used tools, trusted by thousands of professionals worldwide for their speed and accuracy.
                         </p>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {featuredTools.map((tool, index) => (
                             <Link to="/tools" key={tool.name}>
-                                <Card
-                                    className="card-gradient hover-lift group cursor-pointer h-full"
-                                    style={{ animationDelay: `${index * 75}ms` }}
-                                >
-                                    <div className="p-6">
-                                        <div className="flex items-start justify-between mb-4">
-                                            <div className="text-5xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                                                {tool.icon}
-                                            </div>
-                                            {tool.badge && (
-                                                <Badge className={`badge-${tool.badge} text-xs`}>
-                                                    {tool.badge}
-                                                </Badge>
-                                            )}
+                                <div className="bg-white rounded-2xl p-6 border border-slate-200 hover:border-[#3A7AFE]/50 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full flex flex-col group">
+                                    <div className="flex items-start justify-between mb-5">
+                                        <div className="text-4xl group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 filter drop-shadow-sm">
+                                            {tool.icon}
                                         </div>
-                                        <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#3A7AFE] transition-colors">
-                                            {tool.name}
-                                        </h3>
-                                        <p className="text-sm text-gray-600 mb-4">{tool.category}</p>
-                                        <Button
-                                            size="sm"
-                                            className="w-full bg-gradient-to-r from-[#3A7AFE] to-[#1D4ED8] text-white hover:shadow-lg transition-all"
-                                        >
-                                            Try Now
-                                            <ArrowRight className="w-4 h-4 ml-2" />
-                                        </Button>
+                                        {tool.badge && (
+                                            <span className={`
+                                                px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide
+                                                ${tool.badge === 'new' ? 'bg-green-100 text-green-700 border border-green-200' : ''}
+                                                ${tool.badge === 'trending' ? 'bg-orange-100 text-orange-700 border border-orange-200' : ''}
+                                                ${tool.badge === 'updated' ? 'bg-blue-100 text-blue-700 border border-blue-200' : ''}
+                                            `}>
+                                                {tool.badge}
+                                            </span>
+                                        )}
                                     </div>
-                                </Card>
+
+                                    <h3 className="text-lg font-bold text-slate-900 mb-1 group-hover:text-[#3A7AFE] transition-colors">
+                                        {tool.name}
+                                    </h3>
+                                    <p className="text-sm text-slate-500 mb-5">{tool.category}</p>
+
+                                    <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between text-sm font-medium text-[#3A7AFE] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        Try Tool
+                                        <ArrowRight className="w-4 h-4 ml-1" />
+                                    </div>
+                                </div>
                             </Link>
                         ))}
+                    </div>
+
+                    <div className="mt-16 text-center">
+                        <Link to="/tools">
+                            <Button size="lg" variant="outline" className="px-8 py-6 text-lg border-2 hover:bg-slate-50">
+                                View All 40+ Tools
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </section>
 
             {/* ========== WHY USE ZENTRYX ========== */}
-            <section className="py-20 px-4 bg-gradient-to-br from-gray-50 to-blue-50">
+            <section className="py-24 px-4 bg-white border-t border-slate-200">
                 <div className="max-w-7xl mx-auto">
-                    <div className="text-center mb-16">
-                        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                            Why Use ZENTRYX?
-                        </h2>
-                        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                            Everything you need. Zero complexity.
-                        </p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                         {/* Fast */}
-                        <Card className="card-zentryx text-center group">
-                            <div className="p-8">
-                                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <Zap className="w-10 h-10 text-white" />
-                                </div>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-3">Fast</h3>
-                                <p className="text-gray-600 leading-relaxed">
-                                    Instant load, no ads disturbance. Lightning-fast performance for all your tools.
-                                </p>
+                        <div className="text-center group">
+                            <div className="w-20 h-20 mx-auto mb-6 rounded-3xl bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                <Zap className="w-10 h-10 text-[#3A7AFE]" />
                             </div>
-                        </Card>
+                            <h3 className="text-2xl font-bold text-slate-900 mb-4">Lightning Fast</h3>
+                            <p className="text-slate-600 leading-relaxed">
+                                Instant load times with no bloat. Our tools are optimized for performance so you can get work done faster.
+                            </p>
+                        </div>
 
                         {/* Accurate */}
-                        <Card className="card-zentryx text-center group">
-                            <div className="p-8">
-                                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <Check className="w-10 h-10 text-white" />
-                                </div>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-3">Accurate</h3>
-                                <p className="text-gray-600 leading-relaxed">
-                                    Developer-grade utilities. Precision and reliability you can trust.
-                                </p>
+                        <div className="text-center group">
+                            <div className="w-20 h-20 mx-auto mb-6 rounded-3xl bg-purple-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                <Check className="w-10 h-10 text-[#9333EA]" />
                             </div>
-                        </Card>
+                            <h3 className="text-2xl font-bold text-slate-900 mb-4">Precision Accuracy</h3>
+                            <p className="text-slate-600 leading-relaxed">
+                                Developer-grade utilities you can trust. Every calculation and conversion is verified for 100% accuracy.
+                            </p>
+                        </div>
 
                         {/* Free Forever */}
-                        <Card className="card-zentryx text-center group">
-                            <div className="p-8">
-                                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <Star className="w-10 h-10 text-white fill-white" />
-                                </div>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-3">Free Forever</h3>
-                                <p className="text-gray-600 leading-relaxed">
-                                    No login, fully open access. All tools completely free, always.
-                                </p>
+                        <div className="text-center group">
+                            <div className="w-20 h-20 mx-auto mb-6 rounded-3xl bg-orange-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                <Star className="w-10 h-10 text-[#F59E0B] fill-[#F59E0B]" />
                             </div>
-                        </Card>
-                    </div>
-                </div>
-            </section>
-
-            {/* ========== NEW TOOLS SECTION ========== */}
-            <section className="py-20 px-4">
-                <div className="max-w-7xl mx-auto">
-                    <div className="text-center mb-12">
-                        <Badge className="mb-6 badge-new">
-                            <Sparkles className="w-4 h-4 inline mr-2" />
-                            Recently Added
-                        </Badge>
-                        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                            New Tools
-                        </h2>
-                        <p className="text-lg text-gray-600">
-                            Check out our latest additions
-                        </p>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {featuredTools.filter(t => t.badge === "new" || t.badge === "updated").map((tool) => (
-                            <Link to="/tools" key={tool.name}>
-                                <Card className="card-gradient hover-lift group cursor-pointer">
-                                    <div className="p-6">
-                                        <div className="flex items-start justify-between mb-4">
-                                            <div className="text-4xl">{tool.icon}</div>
-                                            <Badge className={`badge-${tool.badge} text-xs`}>
-                                                {tool.badge}
-                                            </Badge>
-                                        </div>
-                                        <h3 className="text-lg font-bold text-gray-900 mb-2">{tool.name}</h3>
-                                        <p className="text-sm text-gray-600">{tool.category}</p>
-                                    </div>
-                                </Card>
-                            </Link>
-                        ))}
+                            <h3 className="text-2xl font-bold text-slate-900 mb-4">100% Free</h3>
+                            <p className="text-slate-600 leading-relaxed">
+                                No credit cards, no signups, no hidden fees. Just open access to all premium tools, forever.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </section>
 
             {/* ========== CTA SECTION ========== */}
-            <section className="py-20 px-4 bg-gradient-to-r from-[#3A7AFE] via-[#9333EA] to-[#DB2777] relative overflow-hidden">
-                <div className="absolute inset-0 bg-black/10"></div>
+            <section className="py-24 px-4 relative overflow-hidden">
+                <div className="absolute inset-0 bg-[#0F172A] -z-20"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-[#3A7AFE]/20 to-[#9333EA]/20 -z-10"></div>
+
                 <div className="max-w-4xl mx-auto text-center relative z-10">
-                    <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+                    <h2 className="text-4xl md:text-5xl font-bold mb-8 text-white tracking-tight">
                         Ready to boost your productivity?
                     </h2>
-                    <p className="text-xl mb-10 text-white/90 leading-relaxed">
-                        Join thousands of developers and creators who use our tools daily
+                    <p className="text-xl mb-12 text-slate-300 leading-relaxed max-w-2xl mx-auto">
+                        Join thousands of developers, designers, and creators who use Zentryx tools daily to simplify their workflow.
                     </p>
                     <div className="flex flex-col sm:flex-row justify-center gap-4">
                         <Link to="/tools">
-                            <Button size="lg" className="bg-white text-[#3A7AFE] hover:bg-gray-100 px-12 py-7 rounded-xl text-lg font-bold shadow-2xl hover:shadow-3xl hover:scale-105 transition-all">
-                                Get Started Free
-                                <ArrowRight className="w-5 h-5 ml-2" />
+                            <Button size="lg" className="bg-[#3A7AFE] hover:bg-[#1D4ED8] text-white px-10 py-7 rounded-xl text-lg font-bold shadow-lg hover:shadow-blue-500/25 transition-all">
+                                Get Started Now
                             </Button>
                         </Link>
                         <Link to="/about">
-                            <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white/10 px-12 py-7 rounded-xl text-lg font-bold backdrop-blur-sm">
+                            <Button size="lg" variant="outline" className="bg-transparent border-2 border-slate-600 text-white hover:bg-white/10 hover:border-white px-10 py-7 rounded-xl text-lg font-bold transition-all">
                                 Learn More
                             </Button>
                         </Link>

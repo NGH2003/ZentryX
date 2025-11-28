@@ -13,12 +13,13 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AdminRoute } from "@/components/AdminRoute";
 import { DynamicMetadata } from "@/components/DynamicMetadata";
 import ErrorBoundary from "./components/ErrorBoundary";
+import { ToolsProvider } from "@/contexts/ToolsContext";
 
 // Page components
 import Index from "./pages/Index";
 import Tools from "./pages/Tools";
 import ToolDetail from "./pages/ToolDetail";
-import Admin from "./pages/Admin";
+
 import About from "./pages/About";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
@@ -33,6 +34,19 @@ import Profile from "./pages/Profile";
 import Maintenance from "./pages/Maintenance";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import AdminLayout from "./components/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/Dashboard";
+import ToolsManagement from "./pages/admin/ToolsManagement";
+import ReportedTools from "./pages/admin/ReportedTools";
+import AnalyticsDashboard from "./pages/admin/AnalyticsDashboard";
+import AdsManagement from "./pages/admin/AdsManagement";
+import UserManagement from "./pages/admin/UserManagement";
+import Settings from "./pages/admin/Settings";
+import ContentManagement from "./pages/admin/ContentManagement";
+import BrandingManagement from "./pages/admin/BrandingManagement";
+import FooterManagement from "./pages/admin/FooterManagement";
+import SystemHealth from "./pages/admin/SystemHealth";
+import { AIConfiguration } from "./pages/admin/AIConfiguration";
 
 const queryClient = new QueryClient();
 
@@ -51,7 +65,27 @@ function AppRoutes() {
       <Route path="/" element={<Index />} />
       <Route path="/tools" element={<Tools />} />
       <Route path="/tools/:category/:toolName" element={<ToolDetail />} />
-      <Route path="/backend" element={<AdminRoute element={<Admin />} />} />
+
+      {/* New Admin Panel Routes */}
+      <Route path="/admin" element={<AdminRoute element={<AdminLayout />} />}>
+        <Route index element={<Navigate to="/admin/dashboard" replace />} />
+        <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="tools" element={<ToolsManagement />} />
+        <Route path="reports" element={<ReportedTools />} />
+        <Route path="analytics" element={<AnalyticsDashboard />} />
+        <Route path="ads" element={<AdsManagement />} />
+        <Route path="users" element={<UserManagement />} />
+        <Route path="settings" element={<Settings />} />
+        <Route path="content" element={<ContentManagement />} />
+        <Route path="branding" element={<BrandingManagement />} />
+        <Route path="footer" element={<FooterManagement />} />
+        <Route path="ai-config" element={<AIConfiguration />} />
+        <Route path="system-health" element={<SystemHealth />} />
+      </Route>
+
+      {/* Redirect Legacy Admin Route to New Dashboard */}
+      <Route path="/backend" element={<Navigate to="/admin/dashboard" replace />} />
+
       <Route path="/auth" element={<Auth />} />
       <Route path="/login" element={<AdminRoute element={<Auth />} />} />
       <Route path="/profile" element={<ProtectedRoute element={<Profile />} />} />
@@ -80,22 +114,24 @@ function App() {
     <ErrorBoundary>
       <BrandingProvider>
         <BlogProvider>
-          <AnalyticsProvider>
-            <AdsProvider>
-              <QueryClientProvider client={queryClient}>
-                <TooltipProvider>
-                  <AuthProvider>
-                    <MaintenanceProvider>
-                      <BrowserRouter>
-                        <DynamicMetadata />
-                        <AppRoutes />
-                      </BrowserRouter>
-                    </MaintenanceProvider>
-                  </AuthProvider>
-                </TooltipProvider>
-              </QueryClientProvider>
-            </AdsProvider>
-          </AnalyticsProvider>
+          <ToolsProvider>
+            <AnalyticsProvider>
+              <AdsProvider>
+                <QueryClientProvider client={queryClient}>
+                  <TooltipProvider>
+                    <AuthProvider>
+                      <MaintenanceProvider>
+                        <BrowserRouter>
+                          <DynamicMetadata />
+                          <AppRoutes />
+                        </BrowserRouter>
+                      </MaintenanceProvider>
+                    </AuthProvider>
+                  </TooltipProvider>
+                </QueryClientProvider>
+              </AdsProvider>
+            </AnalyticsProvider>
+          </ToolsProvider>
         </BlogProvider>
       </BrandingProvider>
       <Toaster />

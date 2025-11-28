@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Search, Sparkles } from "lucide-react";
+import { Search, Sparkles, Loader2 } from "lucide-react";
 import { Header, Footer, ToolCard, Button, Input } from "@/components/zentryx";
 import { Badge } from "@/components/ui/badge";
-import { tools, categories } from "@/data/tools";
+import { useTools } from "@/contexts/ToolsContext";
+import { categories } from "@/data/tools"; // Keep categories from local for now, or derive from tools
 import { AdUnit } from "@/components/AdUnit";
 
 // Helper function to generate URL-friendly slugs
@@ -18,6 +19,7 @@ const Tools = () => {
   const [searchParams] = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchTerm, setSearchTerm] = useState("");
+  const { tools, loading } = useTools();
 
   useEffect(() => {
     const categoryParam = searchParams.get("category");
@@ -26,20 +28,7 @@ const Tools = () => {
     }
   }, [searchParams]);
 
-  const [toolOverrides, setToolOverrides] = useState<Record<number, any>>({});
-
-  useEffect(() => {
-    const saved = localStorage.getItem("toolOverrides");
-    if (saved) {
-      setToolOverrides(JSON.parse(saved));
-    }
-  }, []);
-
-  const mergedTools = tools.map(tool =>
-    toolOverrides[tool.id] ? { ...tool, ...toolOverrides[tool.id] } : tool
-  );
-
-  const filteredTools = mergedTools.filter((t) => {
+  const filteredTools = tools.filter((t) => {
     const matchesSearch =
       t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       t.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -47,6 +36,10 @@ const Tools = () => {
       selectedCategory === "All" || t.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  // Derive categories from tools if needed, but for now using static categories list is fine
+  // or we can compute unique categories from fetched tools
+  const uniqueCategories = ["All", ...Array.from(new Set(tools.map(t => t.category)))];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
@@ -58,7 +51,7 @@ const Tools = () => {
           <div className="inline-block mb-6">
             <Badge className="px-6 py-2 text-base bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0 shadow-lg">
               <Sparkles className="w-4 h-4 mr-2" />
-              40+ Professional Tools
+              {tools.length}+ Professional Tools
             </Badge>
           </div>
           <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent mb-6">
@@ -89,7 +82,7 @@ const Tools = () => {
 
           {/* Categories Buttons */}
           <div className="flex flex-wrap justify-center gap-3 mb-16">
-            {categories.map((category, index) => {
+            {uniqueCategories.map((category, index) => {
               const categoryTools = tools.filter((t) => t.category === category);
               const isActive = selectedCategory === category;
               const gradients = [
@@ -102,6 +95,22 @@ const Tools = () => {
                 "from-pink-500 to-rose-500",
                 "from-teal-500 to-cyan-500",
               ];
+
+              if (category === "All") {
+                return (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`px-6 py-3 rounded-xl font-semibold transition-all transform hover:scale-105 ${isActive
+                      ? `bg-gradient-to-r ${gradients[0]} text-white shadow-lg`
+                      : "bg-white text-gray-700 border-2 border-gray-200 hover:border-blue-400"
+                      }`}
+                  >
+                    {category}
+                    <span className="ml-2 text-sm opacity-75">({tools.length})</span>
+                  </button>
+                );
+              }
 
               return (
                 <button
@@ -143,32 +152,38 @@ const Tools = () => {
         )}
 
         {/* Tools Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredTools.map((tool: any) => {
-            const categorySlug = generateSlug(tool.category);
-            const toolSlug = generateSlug(tool.name);
-            const toolHref = tool.path || `/tools/${categorySlug}/${toolSlug}`;
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <Loader2 className="w-12 h-12 animate-spin text-blue-500" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredTools.map((tool) => {
+              const categorySlug = generateSlug(tool.category);
+              const toolSlug = generateSlug(tool.name);
+              const toolHref = tool.path || `/tools/${categorySlug}/${toolSlug}`;
 
-            return (
-              <ToolCard
-                key={tool.id}
-                name={tool.name}
-                description={tool.description}
-                icon={tool.icon}
-                category={tool.category}
-                badge={
-                  tool.status && ['new', 'beta', 'deprecated'].includes(tool.status.toLowerCase())
-                    ? tool.status.toLowerCase()
-                    : (tool.featured ? "trending" : undefined)
-                }
-                featured={tool.featured}
-                href={toolHref}
-              />
-            );
-          })}
-        </div>
+              return (
+                <ToolCard
+                  key={tool.id}
+                  name={tool.name}
+                  description={tool.description}
+                  icon={tool.icon}
+                  category={tool.category}
+                  badge={
+                    tool.status && ['new', 'beta', 'deprecated'].includes(tool.status.toLowerCase())
+                      ? tool.status.toLowerCase() as "new" | "beta" | "deprecated" | "trending" | undefined
+                      : (tool.featured ? "trending" : undefined)
+                  }
+                  featured={tool.featured}
+                  href={toolHref}
+                />
+              );
+            })}
+          </div>
+        )}
 
-        {filteredTools.length === 0 && (
+        {!loading && filteredTools.length === 0 && (
           <div className="text-center py-20">
             <div className="text-6xl mb-4">🔍</div>
             <h3 className="text-2xl font-bold text-gray-700 mb-2">No tools found</h3>

@@ -10,31 +10,44 @@
 @layer base {
   :root {
     /* ===== ZENTRYX COLOR PALETTE ===== */
-    
+
     /* Primary - Electric Blue */
-    --zentryx-primary: 217 91% 60%; /* #3A7AFE */
-    --zentryx-primary-deep: 221 83% 53%; /* #1D4ED8 */
-    
+    --zentryx-primary: 217 91% 60%;
+    /* #3A7AFE */
+    --zentryx-primary-deep: 221 83% 53%;
+    /* #1D4ED8 */
+
     /* Secondary - Purple Accent */
-    --zentryx-secondary: 271 76% 53%; /* #9333EA */
-    
+    --zentryx-secondary: 271 76% 53%;
+    /* #9333EA */
+
     /* Gold Highlight */
-    --zentryx-gold: 38 92% 50%; /* #F59E0B */
-    
+    --zentryx-gold: 38 92% 50%;
+    /* #F59E0B */
+
     /* Neutral / Grayscale */
-    --zentryx-bg-light: 210 40% 98%; /* #F8FAFC */
-    --zentryx-border-grey: 214 32% 91%; /* #CBD5E1 */
-    --zentryx-text-dark: 222 47% 11%; /* #0F172A */
-    --zentryx-text-secondary: 215 16% 47%; /* #475569 */
-    
+    --zentryx-bg-light: 210 40% 98%;
+    /* #F8FAFC */
+    --zentryx-border-grey: 214 32% 91%;
+    /* #CBD5E1 */
+    --zentryx-text-dark: 222 47% 11%;
+    /* #0F172A */
+    --zentryx-text-secondary: 215 16% 47%;
+    /* #475569 */
+
     /* Status Colors */
-    --zentryx-success: 142 71% 45%; /* #10B981 */
-    --zentryx-warning: 25 95% 53%; /* #F97316 */
-    --zentryx-danger: 0 72% 51%; /* #EF4444 */
-    
+    --zentryx-success: 142 71% 45%;
+    /* #10B981 */
+    --zentryx-warning: 25 95% 53%;
+    /* #F97316 */
+    --zentryx-danger: 0 72% 51%;
+    /* #EF4444 */
+
     /* ===== SHADCN UI VARIABLES ===== */
-    --background: 0 0% 100%;
+    --background: 210 40% 98%;
+    /* Slate-50 */
     --foreground: 222 47% 11%;
+    /* Slate-900 */
 
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
@@ -45,14 +58,14 @@
     --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 271 76% 53%;
+    --secondary: 221 83% 53%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
 
-    --accent: 271 76% 53%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
@@ -62,6 +75,7 @@
     --ring: 217 91% 60%;
 
     --radius: 0.75rem;
+    /* 12px */
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 222 47% 11%;
@@ -92,7 +106,7 @@
     --muted: 217 33% 17%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 271 76% 53%;
+    --accent: 217 33% 17%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
@@ -101,7 +115,7 @@
     --border: 217 33% 17%;
     --input: 217 33% 17%;
     --ring: 217 91% 60%;
-    
+
     --sidebar-background: 222 47% 11%;
     --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 217 91% 60%;
@@ -126,173 +140,138 @@
 
   /* Typography Scale */
   h1 {
-    @apply text-[42px] font-semibold leading-tight tracking-tight;
+    @apply text-[42px] font-bold leading-tight tracking-tight text-slate-900;
   }
 
   h2 {
-    @apply text-[30px] font-bold leading-tight;
+    @apply text-[30px] font-bold leading-tight text-slate-900;
   }
 
   h3 {
-    @apply text-[22px] font-semibold leading-snug;
+    @apply text-[22px] font-semibold leading-snug text-slate-900;
   }
 
   p {
-    @apply text-base leading-relaxed;
+    @apply text-base leading-relaxed text-slate-600;
   }
 
   .caption {
-    @apply text-[13px] font-medium;
+    @apply text-[13px] font-medium text-slate-500;
   }
 }
 
 @layer components {
+
   /* ===== ZENTRYX BUTTON STYLES ===== */
   .btn-primary {
-    @apply bg-gradient-to-r from-[#3A7AFE] to-[#1D4ED8] text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300;
+    @apply bg-[#3A7AFE] text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:bg-[#1D4ED8] hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200;
   }
 
   .btn-secondary {
-    @apply border-2 border-[#3A7AFE] text-[#3A7AFE] font-semibold px-6 py-3 rounded-xl hover:bg-[#3A7AFE] hover:text-white transition-all duration-300;
+    @apply bg-white border-2 border-[#E2E8F0] text-slate-700 font-semibold px-6 py-3 rounded-xl hover:border-[#3A7AFE] hover:text-[#3A7AFE] transition-all duration-200;
   }
 
-  .btn-gold {
-    @apply bg-[#F59E0B] text-white font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300;
+  .btn-ghost {
+    @apply bg-transparent text-slate-600 font-medium px-4 py-2 rounded-lg hover:bg-slate-100 hover:text-[#3A7AFE] transition-all duration-200;
   }
 
   /* ===== ZENTRYX CARD STYLES ===== */
   .card-zentryx {
-    @apply bg-white rounded-2xl border border-[#CBD5E1] p-6 shadow-sm hover:shadow-lg hover:border-[#3A7AFE] transition-all duration-300;
+    @apply bg-white rounded-[20px] border border-[#E2E8F0] p-6 shadow-sm hover:shadow-lg hover:border-[#3A7AFE]/50 transition-all duration-300;
   }
 
   .card-gradient {
-    @apply bg-gradient-to-br from-white to-blue-50 rounded-2xl border-2 border-transparent hover:border-[#3A7AFE] p-6 shadow-md hover:shadow-xl transition-all duration-300;
+    @apply bg-gradient-to-br from-white to-slate-50 rounded-[20px] border border-[#E2E8F0] p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300;
   }
 
   /* ===== ZENTRYX INPUT STYLES ===== */
   .input-zentryx {
-    @apply w-full px-4 py-3 rounded-xl border-2 border-[#CBD5E1] focus:border-[#3A7AFE] focus:ring-4 focus:ring-[#3A7AFE]/20 transition-all duration-200;
+    @apply w-full px-4 py-3 rounded-xl border-2 border-[#E2E8F0] bg-white text-slate-900 placeholder:text-slate-400 focus:border-[#3A7AFE] focus:ring-4 focus:ring-[#3A7AFE]/10 outline-none transition-all duration-200;
   }
 
   /* ===== ZENTRYX BADGE STYLES ===== */
   .badge-new {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-green-500 to-emerald-500 text-white;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700 border border-blue-200;
   }
 
-  .badge-updated {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-blue-500 to-cyan-500 text-white;
-  }
-
-  .badge-trending {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-orange-500 to-red-500 text-white;
+  .badge-hot {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-orange-100 text-orange-700 border border-orange-200;
   }
 }
 
 @layer utilities {
+
   /* ===== SPACING SYSTEM (8-point grid) ===== */
-  .space-4 { @apply space-y-1; }
-  .space-8 { @apply space-y-2; }
-  .space-12 { @apply space-y-3; }
-  .space-16 { @apply space-y-4; }
-  .space-24 { @apply space-y-6; }
-  .space-32 { @apply space-y-8; }
-  .space-48 { @apply space-y-12; }
-  .space-64 { @apply space-y-16; }
-
-  /* ===== GRADIENT UTILITIES ===== */
-  .gradient-primary {
-    background: linear-gradient(135deg, #3A7AFE 0%, #1D4ED8 100%);
+  .space-4 {
+    @apply space-y-1;
   }
 
-  .gradient-secondary {
-    background: linear-gradient(135deg, #9333EA 0%, #7C3AED 100%);
+  .space-8 {
+    @apply space-y-2;
   }
 
-  .gradient-hero {
-    background: linear-gradient(135deg, #3A7AFE 0%, #9333EA 50%, #F59E0B 100%);
+  .space-12 {
+    @apply space-y-3;
+  }
+
+  .space-16 {
+    @apply space-y-4;
+  }
+
+  .space-24 {
+    @apply space-y-6;
+  }
+
+  .space-32 {
+    @apply space-y-8;
+  }
+
+  .space-48 {
+    @apply space-y-12;
+  }
+
+  .space-64 {
+    @apply space-y-16;
   }
 
   /* ===== ANIMATIONS ===== */
   @keyframes blob {
-    0%, 100% {
+
+    0%,
+    100% {
       transform: translate(0px, 0px) scale(1);
     }
+
     33% {
       transform: translate(30px, -50px) scale(1.1);
     }
+
     66% {
       transform: translate(-20px, 20px) scale(0.9);
     }
   }
 
   @keyframes float {
-    0%, 100% {
+
+    0%,
+    100% {
       transform: translateY(0px);
     }
-    50% {
-      transform: translateY(-20px);
-    }
-  }
 
-  @keyframes bounce-slow {
-    0%, 100% {
-      transform: translateY(0);
-    }
     50% {
       transform: translateY(-10px);
-    }
-  }
-
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
     }
   }
 
   @keyframes fade-in-up {
     from {
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(20px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
-    }
-  }
-
-  @keyframes scale-in {
-    from {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-  @keyframes slide-in-right {
-    from {
-      opacity: 0;
-      transform: translateX(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  @keyframes pulse-glow {
-    0%, 100% {
-      box-shadow: 0 0 20px rgba(58, 122, 254, 0.4);
-    }
-    50% {
-      box-shadow: 0 0 40px rgba(58, 122, 254, 0.8);
     }
   }
 
@@ -304,6 +283,10 @@
     animation: float 6s ease-in-out infinite;
   }
 
+  .animate-fade-in-up {
+    animation: fade-in-up 0.6s ease-out forwards;
+  }
+
   .animation-delay-2000 {
     animation-delay: 2s;
   }
@@ -312,66 +295,22 @@
     animation-delay: 4s;
   }
 
-  .animate-bounce-slow {
-    animation: bounce-slow 3s ease-in-out infinite;
-  }
-
-  .animate-fade-in {
-    animation: fade-in 0.6s ease-out;
-  }
-
-  .animate-fade-in-up {
-    animation: fade-in-up 0.8s ease-out;
-  }
-
-  .animate-scale-in {
-    animation: scale-in 0.5s ease-out;
-  }
-
-  .animate-slide-in-right {
-    animation: slide-in-right 0.6s ease-out;
-  }
-
-  .animate-pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
-  }
-
   /* ===== SHADOW UTILITIES ===== */
   .shadow-zentryx {
-    box-shadow: 0 10px 40px -10px rgba(58, 122, 254, 0.3);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
   }
 
   .shadow-zentryx-lg {
-    box-shadow: 0 20px 60px -15px rgba(58, 122, 254, 0.4);
-  }
-
-  .shadow-3xl {
-    box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.3);
-  }
-
-  .shadow-glow {
-    box-shadow: 0 0 30px rgba(58, 122, 254, 0.5);
+    box-shadow: 0 10px 15px -3px rgba(58, 122, 254, 0.15), 0 4px 6px -2px rgba(58, 122, 254, 0.05);
   }
 
   /* ===== GLASSMORPHISM ===== */
   .glass {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-  }
-
-  .glass-dark {
-    background: rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    @apply bg-white/80 backdrop-blur-md border-b border-white/20;
   }
 
   /* ===== HOVER EFFECTS ===== */
   .hover-lift {
-    @apply transition-all duration-300 hover:-translate-y-2 hover:shadow-xl;
-  }
-
-  .hover-glow {
-    @apply transition-all duration-300 hover:shadow-glow;
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
   }
 }
